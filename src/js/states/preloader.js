@@ -10,17 +10,24 @@ Preloader.prototype = {
 
   preload: function () {
     var menuJson = require('../json/menu');
-    _.forEach(menuJson.layers, function(layer) {
-      console.log('menu-' + layer.name, 'assets/menu/' + layer.filename);
-      this.load.image('menu-' + layer.name, 'assets/menu/' + layer.filename);
-    });
+    for (var i = 0; i < menuJson.layers.length; i++) {
+      var path = 'assets/menu/' + menuJson.layers[i].filename;
+      this.load.image('menu-' + menuJson.layers[i].name, path);
+    }
+    this.game.load.spritesheet('menu-button', 'assets/menu/buttonsprite.png', 358, 80);
+
+    var gameJson = require('../json/game');
+    for (var i = 0; i < gameJson.layers.length; i++) {
+      var path = 'assets/game/' + gameJson.layers[i].filename;
+      this.load.image('game-' + gameJson.layers[i].name, path);
+    }
+    this.load.image('game-runway', 'assets/game/runway.png');
 
     this.asset = this.add.sprite(320, 240, 'preloader');
     this.asset.anchor.setTo(0.5, 0.5);
 
     this.load.onLoadComplete.addOnce(this.onLoadComplete, this);
     this.load.setPreloadSprite(this.asset);
-    this.load.image('testsprite', 'assets/test.png');
   },
 
   create: function () {

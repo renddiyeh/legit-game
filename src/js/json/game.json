@@ -1,0 +1,71 @@
+{
+	"name": "Untitled-4",
+	"width": 600,
+	"height": 945,
+	"layers": [
+		{
+			"x": "222.28",
+			"y": "534.11",
+			"r": "379.72",
+			"b": "817.32",
+			"width": "157.44",
+			"height": "283.21",
+			"layername": "player.png",
+			"name": "player",
+			"type": "png",
+			"filename": "player.png",
+			"visible": true,
+			"items": [
+				
+			]
+		},
+		{
+			"x": "137.80",
+			"y": "522.14",
+			"r": "252.02",
+			"b": "598.91",
+			"width": "114.22",
+			"height": "76.77",
+			"layername": "left.png",
+			"name": "left",
+			"type": "png",
+			"filename": "left.png",
+			"visible": true,
+			"items": [
+				
+			]
+		},
+		{
+			"x": "353.76",
+			"y": "522.14",
+			"r": "467.98",
+			"b": "598.91",
+			"width": "114.22",
+			"height": "76.77",
+			"layername": "right.png",
+			"name": "right",
+			"type": "png",
+			"filename": "right.png",
+			"visible": true,
+			"items": [
+				
+			]
+		},
+		{
+			"x": "38.00",
+			"y": "662.00",
+			"r": "563.00",
+			"b": "860.00",
+			"width": "525.00",
+			"height": "198.00",
+			"layername": "start.png",
+			"name": "start",
+			"type": "png",
+			"filename": "start.png",
+			"visible": true,
+			"items": [
+				
+			]
+		}
+	]
+}

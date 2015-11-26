@@ -1,7 +1,10 @@
-var Player = require('../entities/player');
 
 var Game = function () {
-  this.testentity = null;
+  this.rect = null;
+  this.runway = null;
+  this.runwayTexture = null;
+  this.control = {};
+  this.palyer = null;
 };
 
 module.exports = Game;
@@ -9,32 +12,38 @@ module.exports = Game;
 Game.prototype = {
 
   create: function () {
-    var x = (this.game.width / 2) - 100;
-    var y = (this.game.height / 2) - 50;
+    var gw = this.game.width,gh = this.game.height;
+    this.rect = this.game.add.graphics(0,0);
+    this.rect.beginFill('0x9b2a0b');
+    this.rect.drawRect(0, 0, gw, 120);
+    this.rect.drawRect(0, gh - 20, gw, 20);
 
-    this.testentity = new Player(this.game, x, y);
-    this.testentity.anchor.setTo(0.5, 0.5);
+    this.runway = this.game.add.graphics(0,0);
+    this.runway.beginFill('0xffffff');
+    (function() {
+      var width = 180, height = 805;
+      var gap = (gw - 180 * 3) / 4;
+      for (var i = 0; i < 3; i++) {
+        var start = gap * (i + 1) + width * i;
+        this.runway.drawRect(start, 120, width, height);
+      };
+    }).call(this);
+
+    this.runwayTexture = this.game.add.tileSprite(0, 120, gw, 805, 'game-runway');
+    this.runwayTexture.mask = this.runway;
+
+    this.game.add.sprite(38,622, 'game-start');
+
+    this.control.left = this.game.add.sprite(138, 522, 'game-left');
+    this.control.right = this.game.add.sprite(354, 522, 'game-right');
+    this.player = this.game.add.sprite(222, 534, 'game-player');
 
     this.input.onDown.add(this.onInputDown, this);
+    this.game.stage.backgroundColor = '#f8eccf';
   },
 
   update: function () {
-    var x, y, cx, cy, dx, dy, angle, scale;
 
-    x = this.input.position.x;
-    y = this.input.position.y;
-    cx = this.world.centerX;
-    cy = this.world.centerY;
-
-    angle = Math.atan2(y - cy, x - cx) * (180 / Math.PI);
-    this.testentity.angle = angle;
-
-    dx = x - cx;
-    dy = y - cy;
-    scale = Math.sqrt(dx * dx + dy * dy) / 100;
-
-    this.testentity.scale.x = scale * 0.6;
-    this.testentity.scale.y = scale * 0.6;
   },
 
   onInputDown: function () {

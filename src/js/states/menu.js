@@ -1,5 +1,6 @@
 var Menu = function () {
   this.text = null;
+  this.button = null;
 };
 
 module.exports = Menu;
@@ -7,14 +8,13 @@ module.exports = Menu;
 Menu.prototype = {
 
   create: function () {
-    var x = this.game.width / 2;
-    var y = this.game.height / 2;
-
-    var style = { font: "65px Arial", fill: "#ffffff", align: "center" };
-
-    this.text = this.add.text(x - 300, y - 200, "Press to Start", style);
-
-    this.input.onDown.add(this.onDown, this);
+    this.button = this.game.add.button(117.5, 740, 'menu-button', this.onDown, this, 2, 1, 0);
+    var menuJson = require('../json/menu');
+    for (var i = 0; i < menuJson.layers.length; i++) {
+      var layer = menuJson.layers[i];
+      this.game.add.sprite(layer.x, layer.y, 'menu-' + layer.name);
+    };
+    this.game.stage.backgroundColor = '#cd451d';
   },
 
   update: function () {

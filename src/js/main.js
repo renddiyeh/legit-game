@@ -1,6 +1,6 @@
 'use strict';
 
-var game = new Phaser.Game(800, 600, Phaser.AUTO, 'legi-game-game');
+var game = new Phaser.Game(600, 945, Phaser.AUTO, 'legi-game-game');
 
 window.Utils = require('./utils');
 window.playerState = {
