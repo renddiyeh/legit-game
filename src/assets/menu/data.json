@@ -1,0 +1,135 @@
+{
+	"name": "1124_立委遊戲_手機畫面_01.ai",
+	"width": 600,
+	"height": 945,
+	"layers": [
+		{
+			"x": "0.37",
+			"y": "51.63",
+			"r": "599.92",
+			"b": "258.41",
+			"width": "599.55",
+			"height": "206.78",
+			"layername": "title.svg",
+			"name": "title",
+			"type": "svg",
+			"filename": "title.svg",
+			"visible": true,
+			"items": [
+				
+			]
+		},
+		{
+			"x": "-24.83",
+			"y": "258.41",
+			"r": "640.52",
+			"b": "626.90",
+			"width": "665.35",
+			"height": "368.49",
+			"layername": "box-of-death.svg",
+			"name": "box-of-death",
+			"type": "svg",
+			"filename": "box-of-death.svg",
+			"visible": true,
+			"items": [
+				
+			]
+		},
+		{
+			"x": "21.16",
+			"y": "646.99",
+			"r": "559.10",
+			"b": "714.73",
+			"width": "537.94",
+			"height": "67.74",
+			"layername": "short.svg",
+			"name": "short",
+			"type": "svg",
+			"filename": "short.svg",
+			"visible": true,
+			"items": [
+				
+			]
+		},
+		{
+			"x": "457.76",
+			"y": "791.98",
+			"r": "524.25",
+			"b": "835.47",
+			"width": "66.49",
+			"height": "43.49",
+			"layername": "hand.svg",
+			"name": "hand",
+			"type": "svg",
+			"filename": "hand.svg",
+			"visible": true,
+			"items": [
+				
+			]
+		},
+		{
+			"x": "117.55",
+			"y": "739.42",
+			"r": "475.84",
+			"b": "819.74",
+			"width": "358.29",
+			"height": "80.32",
+			"layername": "button.svg",
+			"name": "button",
+			"type": "svg",
+			"filename": "button.svg",
+			"visible": true,
+			"items": [
+				
+			]
+		},
+		{
+			"x": "117.55",
+			"y": "739.42",
+			"r": "471.98",
+			"b": "815.87",
+			"width": "354.43",
+			"height": "76.45",
+			"layername": "button onpress.svg",
+			"name": "button-onpress",
+			"type": "svg",
+			"filename": "button-onpress.svg",
+			"visible": true,
+			"items": [
+				
+			]
+		},
+		{
+			"x": "62.91",
+			"y": "879.21",
+			"r": "300.09",
+			"b": "921.97",
+			"width": "237.18",
+			"height": "42.76",
+			"layername": "tnl.svg",
+			"name": "tnl",
+			"type": "svg",
+			"filename": "tnl.svg",
+			"visible": true,
+			"items": [
+				
+			]
+		},
+		{
+			"x": "361.61",
+			"y": "884.85",
+			"r": "520.33",
+			"b": "916.34",
+			"width": "158.72",
+			"height": "31.49",
+			"layername": "relab.svg",
+			"name": "relab",
+			"type": "svg",
+			"filename": "relab.svg",
+			"visible": true,
+			"items": [
+				
+			]
+		}
+	]
+}
