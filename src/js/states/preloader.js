@@ -11,8 +11,8 @@ Preloader.prototype = {
   preload: function () {
     var menuJson = require('../json/menu');
     _.forEach(menuJson.layers, function(layer) {
-      this.load.image('menu-' + layer.name, 'assets/menu/' + layer.filename);
       console.log('menu-' + layer.name, 'assets/menu/' + layer.filename);
+      this.load.image('menu-' + layer.name, 'assets/menu/' + layer.filename);
     });
 
     this.asset = this.add.sprite(320, 240, 'preloader');
