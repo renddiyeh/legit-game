@@ -22,6 +22,10 @@ Preloader.prototype = {
       this.load.image('game-' + gameJson.layers[i].name, path);
     }
     this.load.image('game-runway', 'assets/game/runway.png');
+    for (var i = 1; i <= 8; i++) {
+      var path = 'assets/game/obstacle-' + i + '.png';
+      this.load.image('obstacle-' + i, path);
+    };
 
     this.asset = this.add.sprite(320, 240, 'preloader');
     this.asset.anchor.setTo(0.5, 0.5);
