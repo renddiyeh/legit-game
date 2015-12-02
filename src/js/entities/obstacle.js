@@ -1,10 +1,23 @@
 var Obstacle = function (game, speed, lane, n) {
 	this.speed = speed;
-  var position = lane[game.rnd.between(0, 2)];
+  if(n === 1 || n === 2 || n === 6) {
+    var position = lane[game.rnd.between(0, 1)] + (lane[1] - lane[0]) / 2;
+  } else {
+    var position = lane[game.rnd.between(0, 2)];
+  }
+  
   // after called sprite function, this obstacle function also extended phaser
   Phaser.Sprite.call(this, game, position, -100, 'obstacle-' + n);
   game.physics.enable(this, Phaser.Physics.ARCADE);
   this.anchor.set(0.5);
+  if(n === 1 || n === 2 || n === 6) {
+    this.scale.setTo(1.8, 1.8);
+  } else {
+    this.scale.setTo(1.5, 1.5);
+  }
+  this.id = n;
+  this.animations.add('move');
+  this.animations.play('move', 4, true);
 };
  
 Obstacle.prototype = Object.create(Phaser.Sprite.prototype);
