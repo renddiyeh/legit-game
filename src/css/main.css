@@ -47,13 +47,128 @@ table {
   user-select: none;
 }
 
-html, body {
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
+.wrapper {
+  position: relative;
 }
 
 .game {
   margin: 0 auto;
-  height: 100vh;
+  max-height: 100vh;
+  display: none;
+}
+
+#game-over {
+  width: 600px;
+  height: 945px;
+  top: 0;
+  left: 50%;
+  position: absolute;
+  display: none;
+  -ms-transform-origin: 50% 0; /* IE 9 */
+  -webkit-transform-origin: 50% 0; /* Chrome, Safari, Opera */
+  transform-origin: 50% 0;
+}
+
+#game-over > * {
+  position: absolute;
+  left: 50%;
+  -ms-transform: translateX(-50%); /* IE 9 */
+  -webkit-transform: translateX(-50%); /* Chrome, Safari, Opera */
+  transform: translateX(-50%);
+  opacity: 0;
+  text-align: center;
+}
+
+#gameover-bg {
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  -ms-transform: translateX(0); /* IE 9 */
+  -webkit-transform: translateX(0); /* Chrome, Safari, Opera */
+  transform: translateX(0);
+  background-color: rgb(248,236,207);
+}
+
+#game-over .static-container > * {
+  display: block;
+  opacity: 0;
+}
+
+#gameover-subtitle {
+  width: 90%;
+  font-size: 1.8em;
+  font-weight: bold;
+  text-align: center;
+  line-height: 1.6em;
+}
+
+#gameover-desc {
+  width: 90%;
+  font-size: 1.4em;
+  line-height: 1.4em;
+}
+
+#info {
+  position: relative;
+  width: 600px;
+  left: 50%;
+  -ms-transform-origin: 50% 0; /* IE 9 */
+  -webkit-transform-origin: 50% 0; /* Chrome, Safari, Opera */
+  transform-origin: 50% 0;
+  background-color: rgb(248,236,207);
+  display: none;
+  padding: 1em 0;
+}
+
+#law > div > * {
+  margin: 1em auto;
+  display: block;
+}
+
+#law p {
+  font-size: 1.6em;
+  margin: 1em;
+  padding: 1em;
+  line-height: 2em;
+  -moz-border-radius: 1em;
+  -webkit-border-radius: 1em;
+  border-radius: 1em; /* future proofing */
+  -khtml-border-radius: 1em; /* for old Konqueror browsers */
+  background-color: rgba(255, 255, 255, 0.7);
+}
+
+.btn {
+  cursor: pointer;
+}
+
+.btn-again {
+  width: 220px;
+  height: 77px;
+  background-image: url(assets/gameover/again.png);
+  background-position: left;
+}
+
+.btn-again:hover, .btn-again:active {
+  background-position: right;
+}
+
+.btn-share {
+  width: 511px;
+  height: 84px;
+  background-image: url(assets/gameover/share.png);
+  background-position: left;
+}
+
+.btn-share:hover, .btn-share:active {
+  background-position: right;
+}
+
+.margin-small {
+  margin: 0.5em auto;
+}
+
+.margin-medium {
+  margin: 1em auto;
 }

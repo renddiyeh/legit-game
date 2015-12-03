@@ -37,7 +37,6 @@ var Game = function () {
   this.overlayLayer = null;
   this.runway = {
     width: 180,
-    height: 805,
     lane: []
   };
   this.startLine = null;
@@ -53,12 +52,13 @@ var Game = function () {
   this.grassGroup = null;
   this.grassTimer = null;
   this.stoneTimer = null;
-  this.level = [];
-  this.levelTexts = ['程序委員會', '一讀', '委員會'];
-  this.overlayHeight = 120;
+  this.levelInfo = [];
+  this.levelTextSource = ['程序委員會', '一讀', '委員會'];
+  this.levelText = [];
+  this.overlayHeight = 100;
   this.levelSetting = {
-    margin: 36,
-    gap: 18,
+    margin: 20,
+    gap: 24,
     scale: 2
   };
   this.tutorial = {};
@@ -99,11 +99,9 @@ Game.prototype = {
 
     this.game.physics.arcade.collide(this.guy, this.obstacleGroup, function(obj1, obj2) {
       this.game.paused = true;
-      var that = this;
       setTimeout(function() {
-        that.game.paused = false;
-        that.game.state.start('Gameover', true, false, obj2.id);
-      }, 1500);
+        window.gameover(obj2.id);
+      }, 300);
     }, null, this);
 
     if(this.game.input.mousePointer.isDown) {
@@ -125,13 +123,17 @@ Game.prototype = {
     }
   },
 
+  render: function() {
+    // this.game.debug.body(this.guy);
+  },
+
   gameStart: function() {
     this.tutorial.active = false;
     this.moveBg();
     this.setObstacles();
     this.setGrassStone();
     this.tutorialGroup.visible = false;
-    this.drawLevel();
+    this.drawLevelInfo();
     this.game.time.events.repeat(Phaser.Timer.SECOND * 10, 2, this.nextLevel, this);
   },
 
@@ -143,7 +145,7 @@ Game.prototype = {
     this.game.time.events.remove(this.grassTimer);
     this.game.time.events.remove(this.stoneTimer);
     this.setGrassStone();
-    this.levelText(this.curLevel);
+    this.updateLevelInfo(this.curLevel);
     this.runway.tween.stop();
     this.moveBg();
   },
@@ -193,7 +195,7 @@ Game.prototype = {
     this.game.physics.enable(this.guy, Phaser.Physics.ARCADE);
     this.guy.body.allowRotation = false;
     this.guy.body.moves = false;
-    this.guy.body.setSize(146, 268, 20, 20);
+    this.guy.body.setSize(100, 160, 0, -80);
     this.playerLayer.add(this.guy);
   },
 
@@ -214,6 +216,8 @@ Game.prototype = {
           this.tutorial.playerStats.canMove = true;
           this.tutorial.playerStats.lane = targetLane;
         }, this);
+        this.tutorial.player.animations.add('move');
+        this.tutorial.player.animations.play('move', 8, false);
       }
     } else {
       var targetLane = this.player.lane;
@@ -231,6 +235,8 @@ Game.prototype = {
           this.player.canMove = true;
           this.player.lane = targetLane;
         }, this);
+        this.guy.animations.add('move');
+        this.guy.animations.play('move', 8, false);
       }
     }
   },
@@ -243,11 +249,11 @@ Game.prototype = {
       for (var i = 0; i < 3; i++) {
         var start = gap * (i + 1) + this.runway.width * i;
         this.runway.lane[i] = start + this.runway.width / 2;  
-        this.runway.graphic.drawRect(start, this.overlayHeight, this.runway.width, this.runway.height);
+        this.runway.graphic.drawRect(start, 0, this.runway.width, this.game.height);
       };
     }).call(this);
 
-    this.runway.texture = this.game.add.tileSprite(0, this.overlayHeight, this.game.width, 805, 'game-runway');
+    this.runway.texture = this.game.add.tileSprite(0, 0, this.game.width, this.game.height, 'game-runway');
     this.runway.texture.mask = this.runway.graphic;
   },
 
@@ -258,41 +264,49 @@ Game.prototype = {
   drawOverlay: function() {
     this.overlay = this.game.add.graphics(0,0);
     this.overlay.beginFill('0x9b2a0b');
-    this.overlay.drawRect(0, 0, this.game.width, this.overlayHeight);
+    // this.overlay.drawRect(0, 0, this.game.width, this.overlayHeight);
     this.overlay.drawRect(0, this.game.height - 20, this.game.width, 20);
     this.overlayLayer.add(this.overlay);
   },
 
-  drawLevel: function() {
+  drawLevelInfo: function() {
     var w = (600 - this.levelSetting.margin * 2 - this.levelSetting.gap * 2) / (2 + this.levelSetting.scale);
     var gap = (600 - this.levelSetting.margin * 2 - w * 3) / 2;
     for (var i = 0; i < 3; i++) {
-      this.level[i] = this.game.add.graphics(this.levelSetting.margin + gap * i + w * i, this.levelSetting.margin);
-      this.level[i].beginFill('0x561a0b');
-      this.level[i].drawRect(0, 0, w, this.overlayHeight - this.levelSetting.margin * 2);
+      this.levelInfo[i] = this.game.add.graphics(this.levelSetting.margin + gap * i + w * i, this.levelSetting.margin);
+      this.levelInfo[i].beginFill('0x561a0b');
+      this.levelInfo[i].drawRect(0, 0, w, this.overlayHeight - this.levelSetting.margin * 2);
     };
-    this.levelText(0);
+    this.updateLevelInfo(0);
   },
 
-  levelText: function(n) {
+  updateLevelInfo: function(n) {
     var w = (600 - this.levelSetting.margin * 2 - this.levelSetting.gap * 2) / (2 + this.levelSetting.scale);
     for (var i = 0; i < 3; i++) {
       if(i === n) {
-        this.level[i].x = this.levelSetting.margin + this.levelSetting.gap * i + w * i;
-        this.level[i].clear();
-        this.level[i].beginFill('0xcd451d');
-        this.level[i].drawRect(0, 0, w * 2, this.overlayHeight - this.levelSetting.margin * 2);
+        this.levelInfo[i].x = this.levelSetting.margin + this.levelSetting.gap * i + w * i;
+        this.levelInfo[i].clear();
+        this.levelInfo[i].beginFill('0xcd451d');
+        this.levelInfo[i].drawRect(0, 0, w * 2, this.overlayHeight - this.levelSetting.margin * 2);
+        var style = { font: 'bold 30px sans-serif', fill: '#fff', align: 'center' };
       } else if(i < n) {
-        this.level[i].x = this.levelSetting.margin + this.levelSetting.gap * i + w * i;
-        this.level[i].clear();
-        this.level[i].beginFill('0x561a0b');
-        this.level[i].drawRect(0, 0, w, this.overlayHeight - this.levelSetting.margin * 2);
+        this.levelInfo[i].x = this.levelSetting.margin + this.levelSetting.gap * i + w * i;
+        this.levelInfo[i].clear();
+        this.levelInfo[i].beginFill('0x561a0b');
+        this.levelInfo[i].drawRect(0, 0, w, this.overlayHeight - this.levelSetting.margin * 2);
+        var style = { font: '22px sans-serif', fill: '#fff', align: 'center' };
       } else {
-        this.level[i].x = this.levelSetting.margin + this.levelSetting.gap * i + w * (i + 1);
-        this.level[i].clear();
-        this.level[i].beginFill('0x561a0b');
-        this.level[i].drawRect(0, 0, w, this.overlayHeight - this.levelSetting.margin * 2);
+        this.levelInfo[i].x = this.levelSetting.margin + this.levelSetting.gap * i + w * (i + 1);
+        this.levelInfo[i].clear();
+        this.levelInfo[i].beginFill('0x561a0b');
+        var style = { font: '22px sans-serif', fill: '#fff', align: 'center' };
+        this.levelInfo[i].drawRect(0, 0, w, this.overlayHeight - this.levelSetting.margin * 2);
       }
+      if(this.levelText[i]) {
+        this.levelText[i].destroy();
+      }
+      this.levelText[i] = this.game.add.text(this.levelInfo[i].x + this.levelInfo[i].width / 2, this.levelInfo[i].y + this.levelInfo[i].height / 2 + 3  , this.levelTextSource[i], style);
+      this.levelText[i].anchor.set(0.5);
     };
   },
 

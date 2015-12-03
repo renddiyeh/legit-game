@@ -34,6 +34,7 @@
     "build": "node ./node_modules/gulp/bin/gulp.js build"
   },
   "dependencies": {
+    "jquery": "^2.1.4",
     "scrollreveal": "^2.3.2",
     "velocity-animate": "^1.2.3"
   }

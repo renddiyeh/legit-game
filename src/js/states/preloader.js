@@ -34,18 +34,6 @@ Preloader.prototype = {
     this.load.image('stone', 'assets/game/stone.png');
     this.load.image('grass', 'assets/game/grass.png');
 
-    // gameover loader
-    var gameoverJson = require('../json/gameover');
-    for (var i = 0; i < gameoverJson.layers.length; i++) {
-      if(gameoverJson.layers[i].visible) {
-        var path = 'assets/gameover/' + gameoverJson.layers[i].filename;
-        if(gameoverJson.layers[i].spritesheet) {
-          this.load.spritesheet('gameover-' + gameoverJson.layers[i].name, path, gameoverJson.layers[i].width, gameoverJson.layers[i].height);
-        } else {
-          this.load.image('gameover-' + gameoverJson.layers[i].name, path);
-        }
-      }
-    }
     for (var i = 1; i <= 8; i++) {
       var text = 'assets/gameover/text-' + i + '.png';
       this.load.image('gameover-text-' + i, text);

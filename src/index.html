@@ -11,8 +11,26 @@
 </head>
 
 <body>
-  <div id="legi-game-game" class="game" style="font-family: 'Heiti TC', 'Microsoft YaHei'"></div>
-  <div id="game-over"></div>
+  <div class="wrapper">
+    <div id="legi-game" class="game" style="font-family: 'Heiti TC', 'Microsoft YaHei'"></div>
+    <div id="game-over">
+      <div id="gameover-bg"></div>
+      <img src="assets/gameover/gameover.png" id="gameover-pic" style="top: 25px">
+      <img src="" id="gameover-title" style="top: 90px">
+      <img src="" id="death-pic" style="top: 150px">
+      <div class="static-container" style="top: 450px">
+        <div id="gameover-subtitle" class="margin-small"></div>
+        <div id="gameover-desc" class="margin-medium"></div>
+        <a href="#" class="btn btn-again margin-medium"></a>
+        <a href="#" class="btn btn-share margin-medium"></a>
+        <img src="assets/gameover/down.png" class="btn btn-down margin-medium">
+      </div>
+    </div>
+  </div>
+  <div id="info">
+    <img src="assets/gameover/others.png" class="margin-medium" style="display: block">
+    <div id="law"></div>
+  </div>
   <div id="orientation"></div>
 
   <script src="js/lib/phaser.js"></script>
