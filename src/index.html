@@ -2,8 +2,9 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>legi-game</title>
+  <title>一百種殺死法案的方法</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="「想讓一條法案活著過三讀，真的超級難！」不相信？不如你親自來死看看～">
 
   <!-- build:css main.min.css -->
   <link rel="stylesheet" href="css/main.css">
@@ -17,10 +18,11 @@
       <div id="gameover-bg"></div>
       <img src="assets/gameover/gameover.png" id="gameover-pic" style="top: 25px">
       <img src="" id="gameover-title" style="top: 90px">
-      <img src="" id="death-pic" style="top: 150px">
+      <div id="death-pic" style="top: 150px"></div>
       <div class="static-container" style="top: 450px">
         <div id="gameover-subtitle" class="margin-small"></div>
-        <div id="gameover-desc" class="margin-medium"></div>
+        <div id="gameover-desc" class="margin-small"></div>
+        <p id="game-missed" class="margin-medium">我通過了<b data-missed></b>個障礙</p>
         <a href="#" class="btn btn-again margin-medium"></a>
         <a href="#" class="btn btn-share margin-medium"></a>
         <img src="assets/gameover/down.png" class="btn btn-down margin-medium">
@@ -30,6 +32,29 @@
   <div id="info">
     <img src="assets/gameover/others.png" class="margin-medium" style="display: block">
     <div id="law"></div>
+    <img src="assets/gameover/down.png" class="btn btn-down margin-large">
+    <div id="overview">
+      <img src="assets/overview/title.png" class="margin-medium" style="display: block" data-sr="enter bottom, move 20px, over 1s">
+      <div class="section margin-medium" data-stage="1" data-sr="enter bottom, over 1s">
+        <span class="title">程序委員會</span>
+        <div class="death"></div>
+      </div>
+      <div class="section margin-medium" data-stage="2" data-sr="enter bottom, over 1s">
+        <span class="title">一&nbsp;讀</span>
+        <div class="death"></div>
+      </div>
+      <div class="section margin-medium" data-stage="3" data-sr="enter bottom, over 1s">
+        <span class="title">審查委員會</span>
+        <div class="death"></div>
+      </div>
+      <div class="section margin-medium" data-stage="0" data-sr="enter bottom, over 1s">
+        <div class="head">任何階段都會遇到的死法</div>
+        <div class="death"></div>
+      </div>
+      <a href="#" class="btn btn-share margin-large"></a>
+      <a href="#" class="btn btn-more margin-large"></a>
+    </div>
+    <div class="info-foot"></div>
   </div>
   <div id="orientation"></div>
 

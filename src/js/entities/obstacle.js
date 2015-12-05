@@ -28,6 +28,7 @@ Obstacle.prototype.update = function() {
   this.body.velocity.y = this.speed;
   if(this.y > this.game.height + 100){
     this.destroy();
+    window.playerState.missedObstacles += 1;
   }
 };
 

@@ -5,31 +5,34 @@ var Grass = require('../entities/grass');
 var Stone = require('../entities/stone');
 var Game = function () {
   this.setting = [{
+    duration: 10,
     player: {
       speed: 200,
     },
     obstacle: {
       rate: 4,
-      speed: 400,
+      speed: 600,
       gap: 2000
     }
   }, {
+    duration: 15,
     player: {
       speed: 250,
     },
     obstacle: {
       rate: 5,
-      speed: 600,
+      speed: 750,
       gap: 1500
     }
   }, {
+    duration: 20,
     player: {
       speed: 300
     },
     obstacle: {
       rate: 6,
-      speed:  800,
-      gap: 1000
+      speed:  900,
+      gap: 1200
     }
   }];
   this.curSetting = null;
@@ -54,16 +57,18 @@ var Game = function () {
   this.grassTimer = null;
   this.stoneTimer = null;
   this.levelInfo = [];
-  this.levelTextSource = ['程序委員會', '一讀', '委員會'];
+  this.levelTextSource = ['程序委員會', '一 讀', '審查委員會'];
   this.levelText = [];
   this.overlayHeight = 100;
   this.levelSetting = {
-    margin: 20,
+    top: 10,
+    margin: 15,
     gap: 24,
     scale: 2
   };
   this.tutorial = {};
   this.tutorialGroup = null;
+  this.missed = 0;
 };
 
 module.exports = Game;
@@ -122,10 +127,19 @@ Game.prototype = {
         this.movePlayer('right');
       }
     }
+    this.missed.text = window.playerState.missedObstacles;
+
   },
 
-  render: function() {
-    // this.game.debug.body(this.guy);
+  winGame: function() {
+    this.player.canMove = false;
+    var playerGoToFinish = this.game.add.tween(this.guy).to({
+      y: -200
+    }, 1000, Phaser.Easing.Quadratic.In, true);
+    playerGoToFinish.onComplete.add(function(){
+      this.game.paused = true;
+    }, this);
+    window.gameover(0);
   },
 
   gameStart: function() {
@@ -135,20 +149,32 @@ Game.prototype = {
     this.setGrassStone();
     this.tutorialGroup.visible = false;
     this.drawLevelInfo();
-    this.game.time.events.repeat(Phaser.Timer.SECOND * 10, 2, this.nextLevel, this);
+    this.drawMissed();
+    this.game.time.events.add(Phaser.Timer.SECOND * this.setting[this.curLevel].duration, this.nextLevel, this);
   },
 
   nextLevel: function() {
-    this.curLevel += 1;
-    this.curSetting = this.setting[this.curLevel];
+
+    // stop all spawns
     this.game.time.events.remove(this.obstacleTimer);
-    this.setObstacles();
     this.game.time.events.remove(this.grassTimer);
     this.game.time.events.remove(this.stoneTimer);
-    this.setGrassStone();
-    this.updateLevelInfo(this.curLevel);
-    this.runway.tween.stop();
-    this.moveBg();
+    if(this.curLevel === 2) {
+      this.runway.tween.stop();
+      this.winGame();
+    } else {
+      // a little before level getting harder
+      this.game.time.events.add(500, function () {
+        this.curLevel += 1;
+        this.curSetting = this.setting[this.curLevel];
+        this.setObstacles();
+        this.setGrassStone();
+        this.updateLevelInfo(this.curLevel);
+        this.runway.tween.stop();
+        this.moveBg();
+        this.game.time.events.add(Phaser.Timer.SECOND * this.setting[this.curLevel].duration, this.nextLevel, this);
+      }, this);
+    }
   },
 
   setObstacles: function() {
@@ -275,7 +301,7 @@ Game.prototype = {
     var w = (600 - this.levelSetting.margin * 2 - this.levelSetting.gap * 2) / (2 + this.levelSetting.scale);
     var gap = (600 - this.levelSetting.margin * 2 - w * 3) / 2;
     for (var i = 0; i < 3; i++) {
-      this.levelInfo[i] = this.game.add.graphics(this.levelSetting.margin + gap * i + w * i, this.levelSetting.margin);
+      this.levelInfo[i] = this.game.add.graphics(this.levelSetting.margin + gap * i + w * i, this.levelSetting.top);
       this.levelInfo[i].beginFill('0x561a0b');
       this.levelInfo[i].drawRect(0, 0, w, this.overlayHeight - this.levelSetting.margin * 2);
     }
@@ -285,25 +311,26 @@ Game.prototype = {
   updateLevelInfo: function(n) {
     var style;
     var w = (600 - this.levelSetting.margin * 2 - this.levelSetting.gap * 2) / (2 + this.levelSetting.scale);
+    var h = this.overlayHeight - this.levelSetting.margin * 2;
     for (var i = 0; i < 3; i++) {
       if(i === n) {
         this.levelInfo[i].x = this.levelSetting.margin + this.levelSetting.gap * i + w * i;
         this.levelInfo[i].clear();
         this.levelInfo[i].beginFill('0xcd451d');
-        this.levelInfo[i].drawRect(0, 0, w * 2, this.overlayHeight - this.levelSetting.margin * 2);
+        this.levelInfo[i].drawRect(0, 0, w * 2, h);
         style = { font: 'bold 30px sans-serif', fill: '#fff', align: 'center' };
       } else if(i < n) {
         this.levelInfo[i].x = this.levelSetting.margin + this.levelSetting.gap * i + w * i;
         this.levelInfo[i].clear();
         this.levelInfo[i].beginFill('0x561a0b');
-        this.levelInfo[i].drawRect(0, 0, w, this.overlayHeight - this.levelSetting.margin * 2);
+        this.levelInfo[i].drawRect(0, 0, w, h);
         style = { font: '22px sans-serif', fill: '#fff', align: 'center' };
       } else {
         this.levelInfo[i].x = this.levelSetting.margin + this.levelSetting.gap * i + w * (i + 1);
         this.levelInfo[i].clear();
         this.levelInfo[i].beginFill('0x561a0b');
         style = { font: '22px sans-serif', fill: '#fff', align: 'center' };
-        this.levelInfo[i].drawRect(0, 0, w, this.overlayHeight - this.levelSetting.margin * 2);
+        this.levelInfo[i].drawRect(0, 0, w, h);
       }
       if(this.levelText[i]) {
         this.levelText[i].destroy();
@@ -311,6 +338,12 @@ Game.prototype = {
       this.levelText[i] = this.game.add.text(this.levelInfo[i].x + this.levelInfo[i].width / 2, this.levelInfo[i].y + this.levelInfo[i].height / 2 + 3  , this.levelTextSource[i], style);
       this.levelText[i].anchor.set(0.5);
     }
+  },
+
+  drawMissed: function() {
+    var style = { font: 'bold 36px sans-serif', fill: '#000', align: 'center' };
+    this.missed = this.game.add.text(this.game.width - 40, this.levelInfo[2].y + this.levelInfo[2].height + 30, window.playerState.missedObstacles, style);
+    this.missed.anchor.set(0.5);
   },
 
   showTutorial: function() {
@@ -325,8 +358,9 @@ Game.prototype = {
     this.tutorialGroup.add(this.tutorial.bg);
     this.tutorial.ok = this.game.add.button(30, 707, 'tutorial-ok', this.gameStart, this, 1, 0, 1);
     this.tutorialGroup.add(this.tutorial.ok);
-    var titleStyle = { font: 'bold 30px sans-serif', fill: '#fff', align: 'center' };
-    this.tutorial.title = this.game.add.text(60, 145, '現在，你是法案的提案人\n要帶著你的心血向前通過重重阻礙...', titleStyle);
+    var titleStyle = { font: 'bold 26px sans-serif', fill: '#fff', align: 'center' };
+    this.tutorial.title = this.game.add.text(54, 145, '你是一名新科立委，正要帶著手邊剛出爐的\n新法案，前往立法院突破阻礙過三讀⋯', titleStyle);
+    this.tutorial.title.lineSpacing = 10;
     this.tutorialGroup.add(this.tutorial.title);
     var descStyle = { font: '30px sans-serif', fill: '#fff', align: 'center' };
     if(this.game.device.desktop) {
