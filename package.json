@@ -35,6 +35,7 @@
   },
   "dependencies": {
     "jquery": "^2.1.4",
+    "lodash": "^3.10.1",
     "scrollreveal": "^2.3.2",
     "velocity-animate": "^1.2.3"
   }

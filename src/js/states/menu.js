@@ -1,3 +1,5 @@
+/*global requrie, module*/
+
 var Menu = function () {
   this.text = null;
   this.button = null;
@@ -14,12 +16,12 @@ Menu.prototype = {
       var layer = menuJson.layers[i];
       var thisSprite = this.game.add.sprite(layer.x, layer.y, 'menu-' + layer.name);
       if(layer.name === 'hand') {
-        this.game.add.tween(thisSprite).to({ 
+        this.game.add.tween(thisSprite).to({
           x: layer.x - 20,
           y: layer.y - 16
         }, 500, Phaser.Easing.Quadratic.Out, true, 0, -1, true);
       }
-    };
+    }
     this.game.stage.backgroundColor = '#cd451d';
   },
 

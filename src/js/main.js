@@ -1,3 +1,4 @@
+/* global require, $ */
 'use strict';
 
 window.jQuery = window.$ = require('jquery');
@@ -8,7 +9,7 @@ var game = new Phaser.Game(600, 945, Phaser.AUTO, 'legi-game');
 
 window.Utils = require('./utils');
 window.playerState = {
-    currentLevel: 'Game'
+	currentLevel: 'Game'
 };
 
 game.state.add('Boot', require('./states/boot'));
@@ -33,7 +34,7 @@ window.gameover = function (id) {
 			var text = $('<p>').text(obstacleJson[id - 1].law[i - 1]);
 			div.append(law).append(text);
 			$('#law').append(div);
-		};
+		}
 	};
 
 	var showGameoverButton = function() {
@@ -48,35 +49,35 @@ window.gameover = function (id) {
 	};
 
 	var showGameoverDesc = function() {
-	    var subtitle = obstacleJson[id - 1].subtitle;
-	    var desc = obstacleJson[id - 1].desc;
-	    $('#gameover-subtitle').html('<p>' + subtitle).velocity({
+		var subtitle = obstacleJson[id - 1].subtitle;
+		var desc = obstacleJson[id - 1].desc;
+		$('#gameover-subtitle').html('<p>' + subtitle).velocity({
 			opacity: 1
 		}, {
-	    	duration: 1000
-	    });
-	    $('#gameover-desc').html('<p>' + desc).velocity({opacity: 1}, {
-	    	complete: function() {
-	    		showGameoverButton();
+			duration: 1000
+		});
+		$('#gameover-desc').html('<p>' + desc).velocity({opacity: 1}, {
+			complete: function() {
+				showGameoverButton();
 				$('#info').show();
 				window.sr = new scrollReveal();
-	    	},
-	    	duration: 1000,
+			},
+			duration: 1000,
 			delay: 500
-	    });
+		});
 	};
 
 	var showGameoverTitle = function() {
 		$('#game-over .static-container').css({opacity: 1});
+		$.velocity.hook($('#gameover-title'), 'translateX', '-50%');
 		$('#gameover-title').velocity({
-			opacity: 1,
-			translateX: '-50%'
+			opacity: 1
 		}, {
 			duration: 1000
 		});
+		$.velocity.hook($('#gameover-pic'), 'translateX', '-50%');
 		$('#gameover-pic').velocity({
-			opacity: 1,
-			translateX: '-50%'
+			opacity: 1
 		}, {
 			duration: 1000,
 			complete: function() {
@@ -95,24 +96,24 @@ window.gameover = function (id) {
 		}
 	});
 
+	$.velocity.hook($('#death-pic'), 'translateX', '-50%');
 	$('#death-pic').velocity({
-		opacity: 1,
-		translateX: '-50%'
+		opacity: 1
 	}, {
-	    duration: 1000
+		duration: 1000
 	});
 };
 
 window.setGameoverDiv = function(scale) {
 	var setting = {
-		transform: 'translate(-50%, 0) scale(' + scale.x + ', ' + scale.y + ')'
+		transform: 'translateX(-50%) scale(' + scale.x + ', ' + scale.y + ')'
 	};
 	$('#game-over').css(setting);
 	$('#info').css(setting);
 };
 
 $('#game-over .btn-again').click(function() {
-    game.paused = false;
+	game.paused = false;
 	game.state.start(playerState.currentLevel);
 	$('#game-over').hide().children().each(function() {
 		$(this).css({opacity: 0});

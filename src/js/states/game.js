@@ -1,3 +1,4 @@
+/*global require, module*/
 var _ = require('lodash');
 var Obstacle = require('../entities/obstacle');
 var Grass = require('../entities/grass');
@@ -73,7 +74,7 @@ Game.prototype = {
     this.curSetting = this.setting[0];
     this.curLevel = 0;
     this.game.stage.backgroundColor = '#f8eccf';
-    this.drawRunway(); 
+    this.drawRunway();
     this.stoneGroup = this.game.add.group();
     this.grassGroup = this.game.add.group();
     this.obstacleGroup = this.game.add.group();
@@ -200,8 +201,9 @@ Game.prototype = {
   },
 
   movePlayer: function(direction) {
+    var targetLane, moveTween;
     if(this.tutorial.active) {
-      var targetLane = this.tutorial.playerStats.lane;
+      targetLane = this.tutorial.playerStats.lane;
       if(direction === 'left') {
         targetLane -= 1;
       } else {
@@ -209,7 +211,7 @@ Game.prototype = {
       }
       if(this.tutorial.playerStats.canMove && Math.abs(targetLane) <= 1){
         this.tutorial.playerStats.canMove = false;
-        var moveTween = this.game.add.tween(this.tutorial.player).to({ 
+        moveTween = this.game.add.tween(this.tutorial.player).to({
           x: this.tutorial.lane[targetLane + 1]
         }, this.curSetting.player.speed, Phaser.Easing.Quadratic.Out, true);
         moveTween.onComplete.add(function(){
@@ -220,7 +222,7 @@ Game.prototype = {
         this.tutorial.player.animations.play('move', 8, false);
       }
     } else {
-      var targetLane = this.player.lane;
+      targetLane = this.player.lane;
       if(direction === 'left') {
         targetLane -= 1;
       } else {
@@ -228,7 +230,7 @@ Game.prototype = {
       }
       if(this.player.canMove && Math.abs(targetLane) <= 1){
         this.player.canMove = false;
-        var moveTween = this.game.add.tween(this.guy).to({ 
+        moveTween = this.game.add.tween(this.guy).to({
           x: this.runway.lane[targetLane + 1]
         }, this.curSetting.player.speed, Phaser.Easing.Quadratic.Out, true);
         moveTween.onComplete.add(function(){
@@ -248,9 +250,9 @@ Game.prototype = {
       var gap = (this.game.width - this.runway.width * 3) / 4;
       for (var i = 0; i < 3; i++) {
         var start = gap * (i + 1) + this.runway.width * i;
-        this.runway.lane[i] = start + this.runway.width / 2;  
+        this.runway.lane[i] = start + this.runway.width / 2;
         this.runway.graphic.drawRect(start, 0, this.runway.width, this.game.height);
-      };
+      }
     }).call(this);
 
     this.runway.texture = this.game.add.tileSprite(0, 0, this.game.width, this.game.height, 'game-runway');
@@ -276,11 +278,12 @@ Game.prototype = {
       this.levelInfo[i] = this.game.add.graphics(this.levelSetting.margin + gap * i + w * i, this.levelSetting.margin);
       this.levelInfo[i].beginFill('0x561a0b');
       this.levelInfo[i].drawRect(0, 0, w, this.overlayHeight - this.levelSetting.margin * 2);
-    };
+    }
     this.updateLevelInfo(0);
   },
 
   updateLevelInfo: function(n) {
+    var style;
     var w = (600 - this.levelSetting.margin * 2 - this.levelSetting.gap * 2) / (2 + this.levelSetting.scale);
     for (var i = 0; i < 3; i++) {
       if(i === n) {
@@ -288,18 +291,18 @@ Game.prototype = {
         this.levelInfo[i].clear();
         this.levelInfo[i].beginFill('0xcd451d');
         this.levelInfo[i].drawRect(0, 0, w * 2, this.overlayHeight - this.levelSetting.margin * 2);
-        var style = { font: 'bold 30px sans-serif', fill: '#fff', align: 'center' };
+        style = { font: 'bold 30px sans-serif', fill: '#fff', align: 'center' };
       } else if(i < n) {
         this.levelInfo[i].x = this.levelSetting.margin + this.levelSetting.gap * i + w * i;
         this.levelInfo[i].clear();
         this.levelInfo[i].beginFill('0x561a0b');
         this.levelInfo[i].drawRect(0, 0, w, this.overlayHeight - this.levelSetting.margin * 2);
-        var style = { font: '22px sans-serif', fill: '#fff', align: 'center' };
+        style = { font: '22px sans-serif', fill: '#fff', align: 'center' };
       } else {
         this.levelInfo[i].x = this.levelSetting.margin + this.levelSetting.gap * i + w * (i + 1);
         this.levelInfo[i].clear();
         this.levelInfo[i].beginFill('0x561a0b');
-        var style = { font: '22px sans-serif', fill: '#fff', align: 'center' };
+        style = { font: '22px sans-serif', fill: '#fff', align: 'center' };
         this.levelInfo[i].drawRect(0, 0, w, this.overlayHeight - this.levelSetting.margin * 2);
       }
       if(this.levelText[i]) {
@@ -307,7 +310,7 @@ Game.prototype = {
       }
       this.levelText[i] = this.game.add.text(this.levelInfo[i].x + this.levelInfo[i].width / 2, this.levelInfo[i].y + this.levelInfo[i].height / 2 + 3  , this.levelTextSource[i], style);
       this.levelText[i].anchor.set(0.5);
-    };
+    }
   },
 
   showTutorial: function() {
@@ -348,11 +351,11 @@ Game.prototype = {
     canvas.beginFill('0xffffff');
     canvas.drawCircle(0, 0, 30);
     canvas.alpha = 0.5;
-    var scaleTween = this.game.add.tween(canvas.scale).to({ 
+    this.game.add.tween(canvas.scale).to({
       x: 2,
       y: 2
     }, 500, Phaser.Easing.Quadratic.Out, true);
-    var alphaTween = this.game.add.tween(canvas).to({ 
+    this.game.add.tween(canvas).to({
       alpha: 0
     }, 500, Phaser.Easing.Quadratic.Out, true);
   }

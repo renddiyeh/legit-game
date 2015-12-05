@@ -1,3 +1,4 @@
+/*global requrie, module*/
 var _ = require('lodash');
 var Preloader = function (game) {
   this.asset = null;

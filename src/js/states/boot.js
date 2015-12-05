@@ -1,4 +1,4 @@
-
+/*global module*/
 var Boot = function () {
   this.orientated = false;
 };
@@ -24,7 +24,7 @@ Boot.prototype = {
             this.scale.setMinMax(320, 504, 600, 945);
             this.scale.pageAlignHorizontally = true;
             this.scale.pageAlignVertically = true;
-            this.scale.forceOrientation(true, false);  
+            this.scale.forceOrientation(true, false);
             this.scale.enterIncorrectOrientation.add(this.enterIncorrectOrientation, this);
             this.scale.leaveIncorrectOrientation.add(this.leaveIncorrectOrientation, this);
         }
