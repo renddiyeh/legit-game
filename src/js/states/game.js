@@ -150,6 +150,8 @@ Game.prototype = {
     this.tutorialGroup.visible = false;
     this.drawLevelInfo();
     this.drawMissed();
+    /*this.curLevel = 2;
+    this.nextLevel();*/
     this.game.time.events.add(Phaser.Timer.SECOND * this.setting[this.curLevel].duration, this.nextLevel, this);
   },
 

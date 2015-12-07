@@ -3,8 +3,10 @@
 
 window.jQuery = window.$ = require('jquery');
 $.velocity = require('velocity-animate');
+$.scrolltofixed = require('scrolltofixed');
 var _ = require('lodash');
 var scrollReveal = require('scrollreveal');
+
 var obstacleJson = require('./json/obstacle');
 var game = new Phaser.Game(600, 945, Phaser.AUTO, 'legi-game');
 
@@ -22,38 +24,50 @@ game.state.add('Game', require('./states/game'));
 
 game.state.start('Boot');
 
+var hit = false;
 window.gameover = function (id) {
-	$('#game-over').show();
 	var path = 'assets/gameover/';
+	var deathPic = new Image();
 	if(id === 0) {
-		$('#death-pic').empty().addClass('win');
-		$('#gameover-pic').attr('src', 'assets/win/title.png');
+		hit = true;
+		deathPic.src = 'assets/win/pic.png';
+		$('#death-pic').append(deathPic).addClass('win');
+		$('#gameover-pic img').attr('src', 'assets/win/title.png');
 		(function hit (n) {
-			if(n > 0) {
-				$('#death-pic').toggleClass('hit');
-				if(n % 2 === 1) {
-					setTimeout(function() {
-						hit(--n);
-					}, 1000);
-				} else {
-					setTimeout(function() {
-						hit(--n);
-					}, 500);
-				}
+			if(!hit) {
+				return false;
 			}
-		})(6);
+			$('#death-pic').toggleClass('hit');
+			if(n % 2 === 1) {
+				hit = setTimeout(function() {
+					hit(++n);
+				}, 1000);
+			} else {
+				hit = setTimeout(function() {
+					hit(++n);
+				}, 500);
+			}
+		})(0);
+		$('#game-wrapper').addClass('win');
 	} else {
-		$('#gameover-pic').attr('src', path + 'gameover.png');
-		$('#gameover-title').attr('src', path + 'text-' + id + '.png');
-		var deathPic = new Image();
+		$('#game-wrapper').removeClass('win');
+
+		$('#gameover-pic img').attr('src', path + 'gameover.png');
+		$('#gameover-title img').attr('src', path + 'text-' + id + '.png');
+		
 		deathPic.src = path + 'death-' + id + '.png';
 		$('#death-pic').removeClass('win').empty().append(deathPic);
 	}
 
 	var setOverview = function() {
 		var path = 'assets/overview/';
+		$('#overview .death').empty();
 		_.forEach(obstacleJson, function(ele) {
-			var death = $('<div>').attr('data-sr', 'enter bottom, move 20px, over 1s').addClass('margin-medium');
+			var death = $('<div>').attr('data-sr', 'enter bottom, move 20px, over 1s')
+				.addClass('margin-small item col-xs-6');
+			if(ele.stage !== 0) {
+				death.addClass('col-sm-12');
+			}
 			var icon = new Image();
 			icon.src = path + 'death-0' + ele.id + '.png';
 			var name = $('<p>').addClass('name').text(ele.name);
@@ -65,7 +79,7 @@ window.gameover = function (id) {
 	var setInfoContent = function() {
 		if(id !== 0) {
 			for (var i = 1; i <= 2; i++) {
-				var div = $('<div>').attr('data-sr', 'enter bottom, move 20px, over 1s').addClass('margin-large');
+				var div = $('<div>').attr('data-sr', 'enter bottom, move 20px, over 1s').addClass('margin-large law');
 				var law = new Image();
 				law.src = path + 'law-' + id + '-' + i + '.png';
 				var text = $('<p>').text(obstacleJson[id - 1].law[i - 1]);
@@ -76,10 +90,8 @@ window.gameover = function (id) {
 	};
 
 	var showGameoverButton = function() {
-		$('#game-over .btn').velocity({
-			top: '+=20px'
-		}).velocity({
-			top: '-=20px',
+		$.velocity.hook($('.btn'), 'translateX', '-50%');
+		$('.btn').velocity({
 			opacity: 1
 		}, {
 			duration: 1000
@@ -103,21 +115,17 @@ window.gameover = function (id) {
 		});
 		$('#gameover-desc').html('<p>' + desc).velocity({opacity: 1}, {
 			duration: 1000,
-			delay: 800
-		});
-		$('#game-missed').velocity({opacity: 1}, {
-			duration: 1000,
-			delay: 1600,
+			delay: 800,
 			complete: function() {
 				showGameoverButton();
 				$('#info').show();
 				window.sr = new scrollReveal();
 			}
-		}).find('[data-missed]').text(playerState.missedObstacles);
+		});
 	};
 
 	var showGameoverTitle = function() {
-		$('#game-over .static-container').css({opacity: 1});
+		$('#gameover-static').css({opacity: 1});
 		if(id !== 0) {
 			$.velocity.hook($('#gameover-title'), 'translateX', '-50%');
 			$('#gameover-title').velocity({
@@ -147,6 +155,7 @@ window.gameover = function (id) {
 			setInfoContent();
 			setOverview();
 			$('#legi-game').css({opacity: 0});
+			$(this).css('z-index', '-1');
 		}
 	});
 
@@ -156,30 +165,64 @@ window.gameover = function (id) {
 	}, {
 		duration: 1000
 	});
+	$('#gameoverlay').show();
+	$('#gameover-header').show();
+	$('#section-title').scrollToFixed({
+		marginTop: 10,
+		limit: $($('.section')[3]).offset().top
+	});
 };
 
-window.setGameoverDiv = function(scale) {
-	// adjust gamover info based on current game scale
-	var setting = {
-		transform: 'translateX(-50%) scale(' + scale.x + ', ' + scale.y + ')'
-	};
-	$('#game-over').css(setting);
-	$('#info').css(setting);
+window.gameoverResize = function(height, width) {
+	$('#gameover-header').height(height * 0.55);
+	$('#gameover-wrapper').css('max-width', width);
+	$('body').removeClass();
+	if(width >= 480 && width < 600) {
+		$('body').addClass('md');
+	} else if(width >= 600) {
+		$('body').addClass('lg');
+	}
 };
 
-$('#game-over .btn-again').click(function() {
+window.gameoverButtonResize = function(scale) {
+	$('.buttons').css({
+		transform: 'scale(' + scale.x + ',' + scale.y + ')'
+	});
+};
+
+$('.btn-again').click(function() {
 	// restart game
 	$('#legi-game').css({opacity: 1});
 	game.paused = false;
 	game.state.start(playerState.currentLevel);
-	$('#game-over').hide().children().each(function() {
+	$('#gameover-header').hide().children().each(function() {
 		$(this).css({opacity: 0});
 	});
-	$('#game-over .static-container').children().each(function() {
+	$('#gameover-static').children().each(function() {
 		$(this).css({opacity: 0});
 	});
 	$('#info').hide();
 	$('#law').empty();
+	$('#gameoverlay').hide();
+	$('#gameover-bg').css({
+		'z-index': '0',
+		opacity: 0
+	});
+	$('.btn').css({opacity: 0});
+	hit = false;
 	// reset counter
 	playerState.missedObstacles = 0;
+});
+var posY;
+$(document).scroll(function() {
+	posY = document.all? iebody.scrollTop : pageYOffset;
+	if($('.section').eq(0).offset().top < posY && $('.section').eq(1).offset().top >= posY) {
+		$('.title').removeClass('active').eq(0).addClass('active');
+	}
+	if($('.section').eq(1).offset().top < posY && $('.section').eq(2).offset().top >= posY) {
+		$('.title').removeClass('active').eq(1).addClass('active');
+	}
+	if($('.section').eq(2).offset().top < posY) {
+		$('.title').removeClass('active').eq(2).addClass('active');
+	}
 });

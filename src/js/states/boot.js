@@ -41,12 +41,16 @@ Boot.prototype = {
         this.state.start('Preloader');
         this.game.stage.backgroundColor = '#cd451d';
         document.getElementById('legi-game').style.display = 'block';
-        window.setGameoverDiv(this.scale.scaleFactorInversed);
+        window.gameoverResize(this.scale.height, this.scale.width);
+        window.gameoverButtonResize(this.scale.scaleFactorInversed);
 
     },
 
     gameResized: function () {
-        window.setGameoverDiv(this.scale.scaleFactorInversed);
+        if (this.game.device.desktop) {
+            window.gameoverButtonResize(this.scale.scaleFactorInversed);
+            window.gameoverResize(this.scale.height, this.scale.width);
+        }
     },
 
     enterIncorrectOrientation: function () {
