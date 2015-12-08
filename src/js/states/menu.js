@@ -22,7 +22,6 @@ Menu.prototype = {
         }, 500, Phaser.Easing.Quadratic.Out, true, 0, -1, true);
       }
     }
-    this.game.stage.backgroundColor = '#cd451d';
   },
 
   update: function () {

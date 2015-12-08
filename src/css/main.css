@@ -979,6 +979,14 @@ body.lg {
   font-size: 100%;
 }
 
+body.bg-orange {
+  background-color: #cd451d;
+}
+
+body.bg-pale {
+  background-color: #f8eccf;
+}
+
 #game-wrapper {
   position: relative;
 }
@@ -1049,6 +1057,11 @@ body.lg {
   width: 90%;
   height: 70.5%;
   overflow: hidden;
+}
+
+#death-pic img {
+  width: 100%;
+  height: 100%;
 }
 
 #death-pic.win img {
@@ -1162,15 +1175,13 @@ body.lg {
 }
 
 #overview .section {
-  background-color: #FFFEEE;
+  background-color: none;
   width: 88%;
   margin-top: 2em;
 }
 
-#overview .section:after {
-  content:'';
-  display:block;
-  clear: both;
+#overview .section.active {
+  background-color: #FFFEEE;
 }
 
 #overview .head {
@@ -1183,6 +1194,8 @@ body.lg {
 }
 
 #section-title {
+  background-color: white;
+  padding: 1em 0;
 }
 
 #section-title .title {
@@ -1200,7 +1213,7 @@ body.lg {
 #overview .death {
   font-size: 1.6em;
   text-align: center;
-  padding-bottom: 1.5em;
+  padding: 0 1em 1.5em;
 }
 
 #overview .name {
@@ -1251,8 +1264,8 @@ body.lg {
 }
 
 .btn-again {
-  width: 139px;
-  height: 47px;
+  width: 178px;
+  height: 49px;
 }
 
 .btn-again img {
@@ -1269,8 +1282,8 @@ body.lg {
 }
 
 .btn-share {
-  width: 335px;
-  height: 65px;
+  width: 345.5px;
+  height: 56px;
 }
 
 .btn-share img {
@@ -1287,8 +1300,8 @@ body.lg {
 }
 
 .btn-more {
-  width: 429px;
-  height: 65px;
+  width: 345.5px;
+  height: 57px;
 }
 
 .btn-more img {

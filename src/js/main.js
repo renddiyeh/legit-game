@@ -24,49 +24,18 @@ game.state.add('Game', require('./states/game'));
 
 game.state.start('Boot');
 
-var hit = false;
+var inGame = true;
+
+var canHit = false;
 window.gameover = function (id) {
-	var path = 'assets/gameover/';
-	var deathPic = new Image();
-	if(id === 0) {
-		hit = true;
-		deathPic.src = 'assets/win/pic.png';
-		$('#death-pic').append(deathPic).addClass('win');
-		$('#gameover-pic img').attr('src', 'assets/win/title.png');
-		(function hit (n) {
-			if(!hit) {
-				return false;
-			}
-			$('#death-pic').toggleClass('hit');
-			if(n % 2 === 1) {
-				hit = setTimeout(function() {
-					hit(++n);
-				}, 1000);
-			} else {
-				hit = setTimeout(function() {
-					hit(++n);
-				}, 500);
-			}
-		})(0);
-		$('#game-wrapper').addClass('win');
-	} else {
-		$('#game-wrapper').removeClass('win');
-
-		$('#gameover-pic img').attr('src', path + 'gameover.png');
-		$('#gameover-title img').attr('src', path + 'text-' + id + '.png');
-		
-		deathPic.src = path + 'death-' + id + '.png';
-		$('#death-pic').removeClass('win').empty().append(deathPic);
-	}
-
 	var setOverview = function() {
 		var path = 'assets/overview/';
 		$('#overview .death').empty();
 		_.forEach(obstacleJson, function(ele) {
 			var death = $('<div>').attr('data-sr', 'enter bottom, move 20px, over 1s')
-				.addClass('margin-small item col-xs-6');
-			if(ele.stage !== 0) {
-				death.addClass('col-sm-12');
+				.addClass('item col-xs-6');
+			if(ele.stage === 2) {
+				death.addClass('col-xs-offset-3');
 			}
 			var icon = new Image();
 			icon.src = path + 'death-0' + ele.id + '.png';
@@ -75,7 +44,7 @@ window.gameover = function (id) {
 			$('#overview [data-stage=' + ele.stage + '] .death').append(death);
 		});
 	};
-	
+
 	var setInfoContent = function() {
 		if(id !== 0) {
 			for (var i = 1; i <= 2; i++) {
@@ -94,7 +63,7 @@ window.gameover = function (id) {
 		$('.btn').velocity({
 			opacity: 1
 		}, {
-			duration: 1000
+			duration: 500
 		});
 	};
 
@@ -111,11 +80,11 @@ window.gameover = function (id) {
 		$('#gameover-subtitle').html('<p>' + subtitle).velocity({
 			opacity: 1
 		}, {
-			duration: 1000
+			duration: 500
 		});
 		$('#gameover-desc').html('<p>' + desc).velocity({opacity: 1}, {
-			duration: 1000,
-			delay: 800,
+			duration: 500,
+			delay: 300,
 			complete: function() {
 				showGameoverButton();
 				$('#info').show();
@@ -145,38 +114,72 @@ window.gameover = function (id) {
 			}
 		});
 	};
+	if(inGame) {
+		inGame = false;
+		var path = 'assets/gameover/';
+		var deathPic = new Image();
+		if(id === 0) {
+			canHit = true;
+			deathPic.src = 'assets/win/pic.png';
+			$('#death-pic').empty().append(deathPic).addClass('win');
+			$('#gameover-pic img').attr('src', 'assets/win/title.png');
+			(function hit (n) {
+				if(!canHit) {
+					return false;
+				}
+				$('#death-pic').toggleClass('hit');
+				if(n % 2 === 1) {
+					setTimeout(function() {
+						hit(++n);
+					}, 1000);
+				} else {
+					setTimeout(function() {
+						hit(++n);
+					}, 500);
+				}
+			})(0);
+			$('#game-wrapper').addClass('win');
+		} else {
+			$('#game-wrapper').removeClass('win');
 
-	$('#gameover-bg').velocity({
-		opacity: 1
-	}, {
-		duration: 1500,
-		complete: function() {
-			showGameoverTitle();
-			setInfoContent();
-			setOverview();
-			$('#legi-game').css({opacity: 0});
-			$(this).css('z-index', '-1');
+			$('#gameover-pic img').attr('src', path + 'gameover.png');
+			$('#gameover-title img').attr('src', path + 'text-' + id + '.png');
+
+			deathPic.src = path + 'death-' + id + '.png';
+			$('#death-pic').removeClass('win').empty().append(deathPic);
 		}
-	});
 
-	$.velocity.hook($('#death-pic'), 'translateX', '-50%');
-	$('#death-pic').velocity({
-		opacity: 1
-	}, {
-		duration: 1000
-	});
-	$('#gameoverlay').show();
-	$('#gameover-header').show();
-	$('#section-title').scrollToFixed({
-		marginTop: 10,
-		limit: $($('.section')[3]).offset().top
-	});
+		$('#gameover-bg').velocity({
+			opacity: 1
+		}, {
+			duration: 1500,
+			complete: function() {
+				showGameoverTitle();
+				setInfoContent();
+				setOverview();
+				$('#legi-game').css({opacity: 0});
+				$(this).css('z-index', '-1');
+			}
+		});
+
+		$.velocity.hook($('#death-pic'), 'translateX', '-50%');
+		$('#death-pic').velocity({
+			opacity: 1
+		}, {
+			duration: 1000
+		});
+		$('#gameoverlay').show();
+		$('#gameover-header').show();
+		$('#section-title').scrollToFixed();
+	}
+
+
 };
 
 window.gameoverResize = function(height, width) {
 	$('#gameover-header').height(height * 0.55);
 	$('#gameover-wrapper').css('max-width', width);
-	$('body').removeClass();
+	$('body').removeClass('md lg');
 	if(width >= 480 && width < 600) {
 		$('body').addClass('md');
 	} else if(width >= 600) {
@@ -190,39 +193,74 @@ window.gameoverButtonResize = function(scale) {
 	});
 };
 
-$('.btn-again').click(function() {
-	// restart game
-	$('#legi-game').css({opacity: 1});
-	game.paused = false;
-	game.state.start(playerState.currentLevel);
-	$('#gameover-header').hide().children().each(function() {
-		$(this).css({opacity: 0});
+window.changeBg = function (color1, color2) {
+	var bg = document.getElementsByTagName('body')[0];
+    bg.classList.remove('bg-' + color1);
+    bg.classList.add('bg-' + color2);
+};
+
+$(function() {
+
+	$('.btn-again').click(function() {
+		if(!inGame) {
+			// restart game
+			$('#legi-game').css({opacity: 1});
+			game.paused = false;
+			game.state.start(playerState.currentLevel);
+			$('#gameover-header').hide().children().each(function() {
+				$(this).css({opacity: 0});
+			});
+			$('#gameover-static').children().each(function() {
+				$(this).css({opacity: 0});
+			});
+			$('#info').hide();
+			$('#law').empty();
+			$('#gameoverlay').hide();
+			$('#gameover-bg').css({
+				'z-index': '0',
+				opacity: 0
+			});
+			$('.btn').css({opacity: 0});
+			canHit = false;
+			window.changeBg('pale', 'orange');
+			// reset counter
+			playerState.missedObstacles = 0;
+			inGame = true;
+		}
 	});
-	$('#gameover-static').children().each(function() {
-		$(this).css({opacity: 0});
+
+
+	var activateSection = function(id) {
+		$('.title').removeClass('active');
+		$('.section').removeClass('active');
+		if(id !== 'none') {
+			$('.title').eq(id).addClass('active');
+			$('.section').eq(id).addClass('active');
+		}
+	};
+	var posY;
+	$(document).scroll(function() {
+		var offset = 200;
+		posY = document.all? iebody.scrollTop : pageYOffset;
+		posY += offset;
+		if(posY < $('.section').eq(0).offset().top) {
+			activateSection('none');
+		}
+		for (var i = 0, l = $('.section').length; i < l; i++) {
+
+			if(i === l - 1) {
+				// last
+				if($('.section').eq(i).offset().top < posY) {
+					activateSection(i);
+				}
+			} else {
+				// in between
+				if($('.section').eq(i).offset().top < posY && posY <= $('.section').eq(i + 1).offset().top) {
+					activateSection(i);
+				}
+			}
+
+		}
 	});
-	$('#info').hide();
-	$('#law').empty();
-	$('#gameoverlay').hide();
-	$('#gameover-bg').css({
-		'z-index': '0',
-		opacity: 0
-	});
-	$('.btn').css({opacity: 0});
-	hit = false;
-	// reset counter
-	playerState.missedObstacles = 0;
-});
-var posY;
-$(document).scroll(function() {
-	posY = document.all? iebody.scrollTop : pageYOffset;
-	if($('.section').eq(0).offset().top < posY && $('.section').eq(1).offset().top >= posY) {
-		$('.title').removeClass('active').eq(0).addClass('active');
-	}
-	if($('.section').eq(1).offset().top < posY && $('.section').eq(2).offset().top >= posY) {
-		$('.title').removeClass('active').eq(1).addClass('active');
-	}
-	if($('.section').eq(2).offset().top < posY) {
-		$('.title').removeClass('active').eq(2).addClass('active');
-	}
+
 });

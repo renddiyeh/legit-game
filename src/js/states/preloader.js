@@ -25,7 +25,7 @@ Preloader.prototype = {
 
     // game loader
     this.load.image('game-start', 'assets/game/start.png');
-    this.load.spritesheet('game-player', 'assets/game/player.png', 164, 285);
+    this.load.spritesheet('game-player', 'assets/game/player.png', 92, 164);
     this.load.image('game-runway', 'assets/game/runway.png');
     var obstacleJson = require('../json/obstacle');
     for (var i = 1; i <= 8; i++) {

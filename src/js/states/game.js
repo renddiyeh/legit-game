@@ -74,6 +74,9 @@ var Game = function () {
 module.exports = Game;
 
 Game.prototype = {
+  init: function () {
+    window.changeBg('orange', 'pale');
+  },
 
   create: function () {
     this.curSetting = this.setting[0];
@@ -129,6 +132,10 @@ Game.prototype = {
     }
     this.missed.text = window.playerState.missedObstacles;
 
+  },
+
+  render: function () {
+    // this.game.debug.body(this.guy);
   },
 
   winGame: function() {
@@ -219,12 +226,15 @@ Game.prototype = {
       lane: 0,
       canMove: true
     };
-    this.guy = new Phaser.Sprite(this.game, this.game.width / 2, this.game.height - 100, 'game-player');
+    this.guy = new Phaser.Sprite(this.game, this.game.width / 2, this.game.height - 130, 'game-player');
     this.guy.anchor.set(0.5, 1);
+    this.guy.scale.setTo(1.5, 1.5);
     this.game.physics.enable(this.guy, Phaser.Physics.ARCADE);
     this.guy.body.allowRotation = false;
     this.guy.body.moves = false;
-    this.guy.body.setSize(100, 160, 0, -80);
+    this.guy.body.setSize(80, 80, 0, -60);
+    this.guy.animations.add('forward', [0, 4], 4, true);
+    this.guy.animations.play('forward');
     this.playerLayer.add(this.guy);
   },
 
@@ -246,8 +256,8 @@ Game.prototype = {
           this.tutorial.playerStats.canMove = true;
           this.tutorial.playerStats.lane = targetLane;
         }, this);
-        this.tutorial.player.animations.add('move');
-        this.tutorial.player.animations.play('move', 8, false);
+        this.tutorial.player.animations.add('move', [1, 2, 0], 6, false);
+        this.tutorial.player.animations.play('move');
       }
     } else {
       targetLane = this.player.lane;
@@ -265,8 +275,11 @@ Game.prototype = {
           this.player.canMove = true;
           this.player.lane = targetLane;
         }, this);
-        this.guy.animations.add('move');
-        this.guy.animations.play('move', 8, false);
+        var anim = this.guy.animations.add('move', [1, 2, 0], 6, false);
+        this.guy.animations.play('move');
+        anim.onComplete.add(function() {
+          this.guy.animations.play('forward');
+        }, this);
       }
     }
   },
@@ -373,6 +386,7 @@ Game.prototype = {
     this.tutorialGroup.add(this.tutorial.desc);
     this.tutorial.player = this.game.add.sprite(this.game.width / 2, 360, 'game-player');
     this.tutorial.player.anchor.set(0.5, 0);
+    this.tutorial.player.scale.setTo(1.5, 1.5);
     this.tutorialGroup.add(this.tutorial.player);
     this.tutorial.lane = [130, 300, 470];
     this.tutorial.playerStats = {
