@@ -68,7 +68,7 @@ var Game = function () {
   };
   this.tutorial = {};
   this.tutorialGroup = null;
-  this.missed = 0;
+  this.timerText = 0;
 };
 
 module.exports = Game;
@@ -114,7 +114,7 @@ Game.prototype = {
     }, null, this);
 
     if(this.game.input.mousePointer.isDown) {
-      this.mouseIndicator(this.game.input.mousePointer.x, this.game.input.mousePointer.y);
+      // this.mouseIndicator(this.game.input.mousePointer.x, this.game.input.mousePointer.y);
       if(this.game.input.mousePointer.x < this.game.width / 2) {
         this.movePlayer('left');
       } else {
@@ -123,19 +123,19 @@ Game.prototype = {
     }
 
     if(this.game.input.pointer1.isDown) {
-      this.mouseIndicator(this.game.input.pointer1.x, this.game.input.pointer1.y);
+      // this.mouseIndicator(this.game.input.pointer1.x, this.game.input.pointer1.y);
       if(this.game.input.pointer1.x < this.game.width / 2) {
         this.movePlayer('left');
       } else {
         this.movePlayer('right');
       }
     }
-    this.missed.text = window.playerState.missedObstacles;
+    //this.missed.text = window.playerState.missedObstacles;
 
   },
 
   render: function () {
-    // this.game.debug.body(this.guy);
+    this.game.debug.body(this.guy);
   },
 
   winGame: function() {
@@ -156,7 +156,9 @@ Game.prototype = {
     this.setGrassStone();
     this.tutorialGroup.visible = false;
     this.drawLevelInfo();
-    this.drawMissed();
+    this.drawTimer();
+    this.startTimer(this.setting[this.curLevel].duration);
+
     /*this.curLevel = 2;
     this.nextLevel();*/
     this.game.time.events.add(Phaser.Timer.SECOND * this.setting[this.curLevel].duration, this.nextLevel, this);
@@ -172,9 +174,10 @@ Game.prototype = {
       this.runway.tween.stop();
       this.winGame();
     } else {
-      // a little before level getting harder
+      // a little pause before level getting harder
       this.game.time.events.add(500, function () {
         this.curLevel += 1;
+        this.startTimer(this.setting[this.curLevel].duration);
         this.curSetting = this.setting[this.curLevel];
         this.setObstacles();
         this.setGrassStone();
@@ -232,7 +235,7 @@ Game.prototype = {
     this.game.physics.enable(this.guy, Phaser.Physics.ARCADE);
     this.guy.body.allowRotation = false;
     this.guy.body.moves = false;
-    this.guy.body.setSize(80, 80, 0, -60);
+    this.guy.body.setSize(60, 80, 0, -60);
     this.guy.animations.add('forward', [0, 4], 4, true);
     this.guy.animations.play('forward');
     this.playerLayer.add(this.guy);
@@ -355,10 +358,17 @@ Game.prototype = {
     }
   },
 
-  drawMissed: function() {
-    var style = { font: 'bold 36px sans-serif', fill: '#000', align: 'center' };
-    this.missed = this.game.add.text(this.game.width - 40, this.levelInfo[2].y + this.levelInfo[2].height + 30, window.playerState.missedObstacles, style);
-    this.missed.anchor.set(0.5);
+  drawTimer: function() {
+    var style = { font: 'bold 36px sans-serif', fill: '#222', align: 'center' };
+    this.timerText = this.game.add.text(this.game.width - 40, this.levelInfo[2].y + this.levelInfo[2].height + 30, '10', style);
+    this.timerText.anchor.set(0.5);
+  },
+
+  startTimer: function(sec) {
+    var count = sec;
+    this.game.time.events.repeat(Phaser.Timer.SECOND, sec + 1, function(){
+      this.timerText.text = count--;
+    }, this);
   },
 
   showTutorial: function() {
