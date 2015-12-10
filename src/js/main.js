@@ -10,6 +10,9 @@ var scrollReveal = require('scrollreveal');
 var obstacleJson = require('./json/obstacle');
 var game = new Phaser.Game(600, 945, Phaser.AUTO, 'legi-game');
 
+window.deathAudio = new Audio('assets/audio/death.mp3');
+window.winAudio = new Audio('assets/audio/win.mp3');
+
 window.Utils = require('./utils');
 window.playerState = {
 	currentLevel: 'Game',

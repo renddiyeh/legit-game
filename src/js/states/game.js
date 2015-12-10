@@ -68,7 +68,9 @@ var Game = function () {
   };
   this.tutorial = {};
   this.tutorialGroup = null;
-  this.timerText = 0;
+  this.timer = null;
+  this.timerSetting = {};
+  this.audio = {};
 };
 
 module.exports = Game;
@@ -79,6 +81,8 @@ Game.prototype = {
   },
 
   create: function () {
+    this.audio.bgm = this.game.add.audio('bgm');
+    this.audio.dead = this.game.add.audio('dead');
     this.curSetting = this.setting[0];
     this.curLevel = 0;
     this.game.stage.backgroundColor = '#f8eccf';
@@ -107,7 +111,9 @@ Game.prototype = {
     }
 
     this.game.physics.arcade.collide(this.guy, this.obstacleGroup, function(obj1, obj2) {
+      this.audio.bgm.stop();
       this.game.paused = true;
+      window.deathAudio.play();
       setTimeout(function() {
         window.gameover(obj2.id);
       }, 300);
@@ -135,7 +141,7 @@ Game.prototype = {
   },
 
   render: function () {
-    this.game.debug.body(this.guy);
+    // this.game.debug.body(this.guy);
   },
 
   winGame: function() {
@@ -146,18 +152,19 @@ Game.prototype = {
     playerGoToFinish.onComplete.add(function(){
       this.game.paused = true;
     }, this);
+    window.winAudio.play();
     window.gameover(0);
   },
 
   gameStart: function() {
+    this.audio.bgm.play();
     this.tutorial.active = false;
     this.moveBg();
     this.setObstacles();
     this.setGrassStone();
     this.tutorialGroup.visible = false;
-    this.drawLevelInfo();
     this.drawTimer();
-    this.startTimer(this.setting[this.curLevel].duration);
+    this.drawLevelInfo();
 
     /*this.curLevel = 2;
     this.nextLevel();*/
@@ -177,7 +184,6 @@ Game.prototype = {
       // a little pause before level getting harder
       this.game.time.events.add(500, function () {
         this.curLevel += 1;
-        this.startTimer(this.setting[this.curLevel].duration);
         this.curSetting = this.setting[this.curLevel];
         this.setObstacles();
         this.setGrassStone();
@@ -337,6 +343,9 @@ Game.prototype = {
         this.levelInfo[i].beginFill('0xcd451d');
         this.levelInfo[i].drawRect(0, 0, w * 2, h);
         style = { font: 'bold 30px sans-serif', fill: '#fff', align: 'center' };
+        this.timer.beginFill('0xcd451d');
+        this.timer.drawRect();
+        this.updateTimer(this.levelInfo[i].x, this.levelInfo[i].y + h + 5, w * 2, this.setting[this.curLevel].duration);
       } else if(i < n) {
         this.levelInfo[i].x = this.levelSetting.margin + this.levelSetting.gap * i + w * i;
         this.levelInfo[i].clear();
@@ -353,22 +362,29 @@ Game.prototype = {
       if(this.levelText[i]) {
         this.levelText[i].destroy();
       }
-      this.levelText[i] = this.game.add.text(this.levelInfo[i].x + this.levelInfo[i].width / 2, this.levelInfo[i].y + this.levelInfo[i].height / 2 + 3  , this.levelTextSource[i], style);
+      this.levelText[i] = this.game.add.text(this.levelInfo[i].x + this.levelInfo[i].width / 2, this.levelInfo[i].y + this.levelInfo[i].height / 2 + 3, this.levelTextSource[i], style);
       this.levelText[i].anchor.set(0.5);
     }
   },
 
   drawTimer: function() {
-    var style = { font: 'bold 36px sans-serif', fill: '#222', align: 'center' };
-    this.timerText = this.game.add.text(this.game.width - 40, this.levelInfo[2].y + this.levelInfo[2].height + 30, '10', style);
-    this.timerText.anchor.set(0.5);
+    this.timer = this.game.add.graphics(0, 0);
   },
 
-  startTimer: function(sec) {
-    var count = sec;
-    this.game.time.events.repeat(Phaser.Timer.SECOND, sec + 1, function(){
-      this.timerText.text = count--;
-    }, this);
+  updateTimer: function(x, y, width, sec) {
+    this.timerSetting.count = 0;
+    this.timerSetting.sub = width / 10 / sec;
+    this.timerSetting.x = x;
+    this.timerSetting.y = y;
+    this.timerSetting.width = width;
+    this.game.time.events.repeat(Phaser.Timer.SECOND / 10, sec * 10, this.timerCountdown, this);
+  },
+
+  timerCountdown: function() {
+    this.timer.clear();
+    this.timer.beginFill('0xcd451d');
+    this.timer.drawRect(this.timerSetting.x, this.timerSetting.y, this.timerSetting.sub * this.timerSetting.count, 10);
+    this.timerSetting.count++;
   },
 
   showTutorial: function() {

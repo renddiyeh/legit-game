@@ -46,6 +46,10 @@ Preloader.prototype = {
       };
     };
 
+    // load music
+    this.game.load.audio('bgm', 'assets/audio/bgm.mp3');
+    this.game.load.audio('footstep', 'assets/audio/footstep.mp3');
+
     this.asset = this.add.sprite(this.game.width / 2, this.game.height / 2, 'preloader');
     this.asset.anchor.setTo(0.5, 0.5);
 

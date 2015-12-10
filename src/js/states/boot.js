@@ -17,6 +17,7 @@ Boot.prototype = {
             this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
             this.scale.setMinMax(320, 504, 600, 945);
             this.scale.pageAlignHorizontally = true;
+            this.scale.setResizeCallback(this.gameResized, this);
         }
         else
         {
@@ -28,7 +29,6 @@ Boot.prototype = {
             this.scale.enterIncorrectOrientation.add(this.enterIncorrectOrientation, this);
             this.scale.leaveIncorrectOrientation.add(this.leaveIncorrectOrientation, this);
         }
-        this.scale.setResizeCallback(this.gameResized, this);
 
     },
 
@@ -47,10 +47,10 @@ Boot.prototype = {
     },
 
     gameResized: function () {
-        if (this.game.device.desktop) {
-            window.gameoverButtonResize(this.scale.scaleFactorInversed);
-            window.gameoverResize(this.scale.height, this.scale.width);
-        }
+
+        window.gameoverButtonResize(this.scale.scaleFactorInversed);
+        window.gameoverResize(this.scale.height, this.scale.width);
+
     },
 
     enterIncorrectOrientation: function () {
