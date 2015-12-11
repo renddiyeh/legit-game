@@ -3,6 +3,7 @@ var _ = require('lodash');
 var Obstacle = require('../entities/obstacle');
 var Grass = require('../entities/grass');
 var Stone = require('../entities/stone');
+
 var Game = function () {
   this.setting = [{
     duration: 10,
@@ -81,6 +82,8 @@ Game.prototype = {
   },
 
   create: function () {
+    this.audio.death = soundManager.createSound({url: 'assets/audio/death.mp3'});
+    this.audio.win = soundManager.createSound({url: 'assets/audio/win.mp3'});
     this.audio.bgm = this.game.add.audio('bgm');
     this.audio.dead = this.game.add.audio('dead');
     this.curSetting = this.setting[0];
@@ -113,7 +116,7 @@ Game.prototype = {
     this.game.physics.arcade.collide(this.guy, this.obstacleGroup, function(obj1, obj2) {
       this.audio.bgm.stop();
       this.game.paused = true;
-      window.deathAudio.play();
+      this.audio.death.play();
       setTimeout(function() {
         window.gameover(obj2.id);
       }, 300);
@@ -152,7 +155,7 @@ Game.prototype = {
     playerGoToFinish.onComplete.add(function(){
       this.game.paused = true;
     }, this);
-    window.winAudio.play();
+    this.audio.win.play();
     window.gameover(0);
   },
 

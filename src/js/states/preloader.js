@@ -1,5 +1,6 @@
 /*global requrie, module*/
 var _ = require('lodash');
+
 var Preloader = function (game) {
   this.asset = null;
   this.ready = false;
@@ -30,7 +31,7 @@ Preloader.prototype = {
     var obstacleJson = require('../json/obstacle');
     for (var i = 1; i <= 8; i++) {
       var path = 'assets/game/obstacle-' + i + '.png';
-      this.load.spritesheet('obstacle-' + i, path, obstacleJson[i-1].width / 2, obstacleJson[i-1].height);
+      this.load.spritesheet('obstacle-' + i, path, Math.floor(obstacleJson[i-1].width / 2), obstacleJson[i-1].height);
     };
     this.load.image('stone', 'assets/game/stone.png');
     this.load.image('grass', 'assets/game/grass.png');

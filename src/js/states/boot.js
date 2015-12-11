@@ -17,7 +17,6 @@ Boot.prototype = {
             this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
             this.scale.setMinMax(320, 504, 600, 945);
             this.scale.pageAlignHorizontally = true;
-            this.scale.setResizeCallback(this.gameResized, this);
         }
         else
         {
@@ -30,6 +29,7 @@ Boot.prototype = {
             this.scale.leaveIncorrectOrientation.add(this.leaveIncorrectOrientation, this);
         }
 
+        this.scale.setResizeCallback(this.gameResized, this);
     },
 
     preload: function() {

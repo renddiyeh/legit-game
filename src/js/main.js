@@ -3,15 +3,12 @@
 
 window.jQuery = window.$ = require('jquery');
 $.velocity = require('velocity-animate');
-$.scrolltofixed = require('scrolltofixed');
 var _ = require('lodash');
 var scrollReveal = require('scrollreveal');
+require('soundmanager2');
 
 var obstacleJson = require('./json/obstacle');
 var game = new Phaser.Game(600, 945, Phaser.AUTO, 'legi-game');
-
-window.deathAudio = new Audio('assets/audio/death.mp3');
-window.winAudio = new Audio('assets/audio/win.mp3');
 
 window.Utils = require('./utils');
 window.playerState = {
@@ -31,22 +28,6 @@ var inGame = true;
 
 var canHit = false;
 window.gameover = function (id) {
-	var setOverview = function() {
-		var path = 'assets/overview/';
-		$('#overview .death').empty();
-		_.forEach(obstacleJson, function(ele) {
-			var death = $('<div>').attr('data-sr', 'enter bottom, move 20px, over 1s')
-				.addClass('item col-xs-6');
-			if(ele.stage === 2) {
-				death.addClass('col-xs-offset-3');
-			}
-			var icon = new Image();
-			icon.src = path + 'death-0' + ele.id + '.png';
-			var name = $('<p>').addClass('name').text(ele.name);
-			death.append(icon).append(name);
-			$('#overview [data-stage=' + ele.stage + '] .death').append(death);
-		});
-	};
 
 	var setInfoContent = function() {
 		if(id !== 0) {
@@ -159,7 +140,6 @@ window.gameover = function (id) {
 			complete: function() {
 				showGameoverTitle();
 				setInfoContent();
-				setOverview();
 				$('#legi-game').css({opacity: 0});
 				$(this).css('z-index', '-1');
 			}
@@ -173,10 +153,7 @@ window.gameover = function (id) {
 		});
 		$('#gameoverlay').show();
 		$('#gameover-header').show();
-		$('#section-title').scrollToFixed();
 	}
-
-
 };
 
 window.gameoverResize = function(height, width) {
@@ -241,29 +218,5 @@ $(function() {
 			$('.section').eq(id).addClass('active');
 		}
 	};
-	var posY;
-	$(document).scroll(function() {
-		var offset = 200;
-		posY = document.all? iebody.scrollTop : pageYOffset;
-		posY += offset;
-		if(posY < $('.section').eq(0).offset().top) {
-			activateSection('none');
-		}
-		for (var i = 0, l = $('.section').length; i < l; i++) {
-
-			if(i === l - 1) {
-				// last
-				if($('.section').eq(i).offset().top < posY) {
-					activateSection(i);
-				}
-			} else {
-				// in between
-				if($('.section').eq(i).offset().top < posY && posY <= $('.section').eq(i + 1).offset().top) {
-					activateSection(i);
-				}
-			}
-
-		}
-	});
 
 });
