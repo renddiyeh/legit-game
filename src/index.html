@@ -5,6 +5,11 @@
   <title>一百種殺死法案的方法</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no">
   <meta name="description" content="「想讓一條法案活著過三讀，真的超級難！」不相信？不如你親自來死看看～">
+  <meta property="og:url" content="" />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="一百種殺死法案的方法" />
+  <meta property="og:description" content="「想讓一條法案活著過三讀，真的超級難！」不相信？不如你親自來死看看～" />
+  <meta property="og:image" content="" />
 
   <!-- build:css main.min.css -->
   <link rel="stylesheet" href="css/main.css">
@@ -12,52 +17,19 @@
 </head>
 
 <body class="bg-orange">
-  <div id="game-wrapper">
+  <div class="wrapper">
     <div id="legi-game" class="game" style="font-family: 'Heiti TC', 'Microsoft YaHei'"></div>
-    <div id="gameoverlay">
-      <div id="gameover-bg"></div>
-      <div id="gameover-wrapper">
-        <div id="gameover-header">
-          <div id="gameover-pic" style="top: 4%">
-            <img src="assets/gameover/gameover.png">
-          </div>
-          <div id="gameover-title" style="top: 16%">
-            <img src="">
-          </div>
-          <div id="death-pic" style="top: 28%"></div>
-        </div>
-        <div id="gameover-static">
-          <div id="gameover-subtitle" class="margin-small"></div>
-          <div id="gameover-desc" class="margin-medium"></div>
-          <div class="buttons" style="height: 180px">
-            <div class="btn btn-again" style="top: 0;">
-              <img src="assets/gameover/again.png">
-            </div>
-            <div class="btn btn-share" style="top: 60px;">
-              <img src="assets/gameover/share.png">
-            </div>
-            <img src="assets/gameover/down.png" class="btn btn-down margin-medium" style="top: 150px;">
-          </div>
-        </div>
-        <div id="info">
-          <div class="info-title margin-medium hide-win" data-sr="enter bottom, over 1s">
-            <img src="assets/gameover/others.png">
-          </div>
-          <div id="law"></div>
-          <!-- <img src="assets/gameover/down.png" class="btn-down margin-large hide-win"> -->
-          <div class="buttons" style="height: 260px">
-            <div class="btn btn-again margin-medium" style="top: 0;">
-              <img src="assets/gameover/again.png">
-            </div>
-            <div class="btn btn-share margin-medium" style="top: 70px;">
-              <img src="assets/gameover/share.png">
-            </div>
-            <div class="btn btn-more margin-medium" style="top: 150px;">
-              <img src="assets/overview/more.png">
-            </div>
-          </div>
-          <div class="info-foot"></div>
-        </div>
+    <div id="info">
+      <img src="assets/gameover/others.png" data-sr="enter bottom, over 1s">
+      <div id="law"></div>
+      <div class="btn btn-again margin-medium" data-sr="enter bottom, over 0.5s">
+        <img src="assets/gameover/again.png">
+      </div>
+      <div class="btn btn-share margin-medium" data-sr="enter bottom, over 0.5s">
+        <img src="assets/gameover/share.png">
+      </div>
+      <div class="btn btn-more margin-medium" data-sr="enter bottom, over 0.5s">
+        <img src="assets/overview/more.png">
       </div>
     </div>
   </div>

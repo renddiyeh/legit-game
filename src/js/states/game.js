@@ -50,6 +50,8 @@ var Game = function () {
   this.playerLayer = null;
   this.leftKey = null;
   this.rightKey = null;
+  this.enterKey = null;
+  this.spaceKey = null;
   this.obstacleGroup = null;
   this.obstacleTimer = null;
   this.obstacleList = [[1, 7], [2, 3], [4], [5, 6, 8]];
@@ -72,6 +74,8 @@ var Game = function () {
   this.timer = null;
   this.timerSetting = {};
   this.audio = {};
+  this.gameover = null;
+  this.gameStarted = null;
 };
 
 module.exports = Game;
@@ -82,10 +86,11 @@ Game.prototype = {
   },
 
   create: function () {
-    this.audio.death = soundManager.createSound({url: 'assets/audio/death.mp3'});
-    this.audio.win = soundManager.createSound({url: 'assets/audio/win.mp3'});
+    this.gameover = false;
+    this.gameStarted = false;
+    this.audio.death = this.game.add.audio('death');
+    this.audio.win = this.game.add.audio('win');
     this.audio.bgm = this.game.add.audio('bgm');
-    this.audio.dead = this.game.add.audio('dead');
     this.curSetting = this.setting[0];
     this.curLevel = 0;
     this.game.stage.backgroundColor = '#f8eccf';
@@ -104,6 +109,8 @@ Game.prototype = {
     }
     this.leftKey = this.game.input.keyboard.addKey(Phaser.Keyboard.LEFT);
     this.rightKey = this.game.input.keyboard.addKey(Phaser.Keyboard.RIGHT);
+    this.enterKey = this.game.input.keyboard.addKey(Phaser.Keyboard.ENTER);
+    this.spaceKey = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
   },
 
   update: function () {
@@ -114,13 +121,35 @@ Game.prototype = {
     }
 
     this.game.physics.arcade.collide(this.guy, this.obstacleGroup, function(obj1, obj2) {
-      this.audio.bgm.stop();
-      this.game.paused = true;
-      this.audio.death.play();
-      setTimeout(function() {
-        window.gameover(obj2.id);
-      }, 300);
+      this.player.moveTween.stop();
+      this.player.canMove = false;
+      obj1.body.velocity = 0;
+      obj2.body.velocity = 0;
+      obj2.body.immovable = true;
+      if(!this.gameover) {
+        this.gameover = true;
+        this.runway.tween.stop();
+        this.audio.bgm.stop();
+        this.grassGroup.forEach(function(grass) {
+          grass.body.velocity = 0;
+        });
+        this.stoneGroup.forEach(function(stone) {
+          stone.body.velocity = 0;
+        });
+        // this.game.paused = true;
+        this.audio.death.play();
+        var game = this.game;
+        setTimeout(function() {
+          game.state.start('Gameover', true, false, obj2.id);
+          // window.gameover(obj2.id);
+        }, 300);
+      }
+      
     }, null, this);
+
+    if((this.enterKey.isDown || this.spaceKey.isDown) && !this.gameStarted) {
+      this.gameStart();
+    }
 
     if(this.game.input.mousePointer.isDown) {
       // this.mouseIndicator(this.game.input.mousePointer.x, this.game.input.mousePointer.y);
@@ -153,13 +182,15 @@ Game.prototype = {
       y: -200
     }, 1000, Phaser.Easing.Quadratic.In, true);
     playerGoToFinish.onComplete.add(function(){
-      this.game.paused = true;
+      this.game.state.start('Gameover', true, false, 0);
     }, this);
+    this.audio.bgm.stop();
+
     this.audio.win.play();
-    window.gameover(0);
   },
 
   gameStart: function() {
+    this.gameStarted = true;
     this.audio.bgm.play();
     this.tutorial.active = false;
     this.moveBg();
@@ -169,8 +200,8 @@ Game.prototype = {
     this.drawTimer();
     this.drawLevelInfo();
 
-    /*this.curLevel = 2;
-    this.nextLevel();*/
+    // this.curLevel = 2;
+    // this.nextLevel();
     this.game.time.events.add(Phaser.Timer.SECOND * this.setting[this.curLevel].duration, this.nextLevel, this);
   },
 
@@ -251,7 +282,7 @@ Game.prototype = {
   },
 
   movePlayer: function(direction) {
-    var targetLane, moveTween;
+    var targetLane;
     if(this.tutorial.active) {
       targetLane = this.tutorial.playerStats.lane;
       if(direction === 'left') {
@@ -261,10 +292,10 @@ Game.prototype = {
       }
       if(this.tutorial.playerStats.canMove && Math.abs(targetLane) <= 1){
         this.tutorial.playerStats.canMove = false;
-        moveTween = this.game.add.tween(this.tutorial.player).to({
+        this.tutorial.playerStats.moveTween = this.game.add.tween(this.tutorial.player).to({
           x: this.tutorial.lane[targetLane + 1]
         }, this.curSetting.player.speed, Phaser.Easing.Quadratic.Out, true);
-        moveTween.onComplete.add(function(){
+        this.tutorial.playerStats.moveTween.onComplete.add(function(){
           this.tutorial.playerStats.canMove = true;
           this.tutorial.playerStats.lane = targetLane;
         }, this);
@@ -280,10 +311,10 @@ Game.prototype = {
       }
       if(this.player.canMove && Math.abs(targetLane) <= 1){
         this.player.canMove = false;
-        moveTween = this.game.add.tween(this.guy).to({
+        this.player.moveTween = this.game.add.tween(this.guy).to({
           x: this.runway.lane[targetLane + 1]
         }, this.curSetting.player.speed, Phaser.Easing.Quadratic.Out, true);
-        moveTween.onComplete.add(function(){
+        this.player.moveTween.onComplete.add(function(){
           this.player.canMove = true;
           this.player.lane = targetLane;
         }, this);

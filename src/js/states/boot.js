@@ -29,7 +29,7 @@ Boot.prototype = {
             this.scale.leaveIncorrectOrientation.add(this.leaveIncorrectOrientation, this);
         }
 
-        this.scale.setResizeCallback(this.gameResized, this);
+        // this.scale.setResizeCallback(this.gameResized, this);
     },
 
     preload: function() {
@@ -41,15 +41,6 @@ Boot.prototype = {
         this.state.start('Preloader');
         this.game.stage.backgroundColor = '#cd451d';
         document.getElementById('legi-game').style.display = 'block';
-        window.gameoverResize(this.scale.height, this.scale.width);
-        window.gameoverButtonResize(this.scale.scaleFactorInversed);
-
-    },
-
-    gameResized: function () {
-
-        window.gameoverButtonResize(this.scale.scaleFactorInversed);
-        window.gameoverResize(this.scale.height, this.scale.width);
 
     },
 

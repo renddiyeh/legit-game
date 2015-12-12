@@ -10,11 +10,7 @@ var Obstacle = function (game, speed, lane, n) {
   Phaser.Sprite.call(this, game, position, -100, 'obstacle-' + n);
   game.physics.enable(this, Phaser.Physics.ARCADE);
   this.anchor.set(0.5);
-/*  if(n === 1 || n === 2 || n === 6) {
-    this.scale.setTo(1.8, 1.8);
-  } else {
-    this.scale.setTo(1.5, 1.5);
-  }*/
+
   this.id = n;
   this.animations.add('move');
   this.animations.play('move', 4, true);
