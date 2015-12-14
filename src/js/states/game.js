@@ -6,7 +6,7 @@ var Stone = require('../entities/stone');
 
 var Game = function () {
   this.setting = [{
-    duration: 10,
+    duration: 5,
     player: {
       speed: 200,
     },
@@ -16,9 +16,9 @@ var Game = function () {
       gap: 2000
     }
   }, {
-    duration: 15,
+    duration: 6,
     player: {
-      speed: 250,
+      speed: 170,
     },
     obstacle: {
       rate: 5,
@@ -26,14 +26,44 @@ var Game = function () {
       gap: 1500
     }
   }, {
-    duration: 20,
+    duration: 12,
     player: {
-      speed: 300
+      speed: 150
     },
     obstacle: {
       rate: 6,
       speed:  900,
       gap: 1200
+    }
+  },{
+    duration: 12,
+    player: {
+      speed: 150,
+    },
+    obstacle: {
+      rate: 6,
+      speed:  900,
+      gap: 1200
+    }
+  }, {
+    duration: 5,
+    player: {
+      speed: 200,
+    },
+    obstacle: {
+      rate: 5,
+      speed: 750,
+      gap: 1500
+    }
+  }, {
+    duration: 5,
+    player: {
+      speed: 200
+    },
+    obstacle: {
+      rate: 5,
+      speed:  750,
+      gap: 1500
     }
   }];
   this.curSetting = null;
@@ -54,20 +84,22 @@ var Game = function () {
   this.spaceKey = null;
   this.obstacleGroup = null;
   this.obstacleTimer = null;
-  this.obstacleList = [[1, 7], [2, 3], [4], [5, 6, 8]];
+  this.obstacleList = [[1, 7], [3, 4, 6], [2, 4, 6, 8], [5], [3, 4, 6], [3, 4, 6], [3, 4, 6]];
   this.stoneGroup = null;
   this.grassGroup = null;
   this.grassTimer = null;
   this.stoneTimer = null;
   this.levelInfo = [];
-  this.levelTextSource = ['程序委員會', '一 讀', '審查委員會'];
-  this.levelText = [];
+  this.levelTextSource = ['程序委員會', '一 讀', '委員會', '黨團協商', '二 讀', '三 讀'];
+  this.levelText = null;
   this.overlayHeight = 100;
   this.levelSetting = {
     top: 10,
     margin: 15,
-    gap: 24,
-    scale: 2
+    gap: 5,
+    scale: 5,
+    corner: 20,
+    baseW: 0
   };
   this.tutorial = {};
   this.tutorialGroup = null;
@@ -121,7 +153,7 @@ Game.prototype = {
     }
 
     this.game.physics.arcade.collide(this.guy, this.obstacleGroup, function(obj1, obj2) {
-      this.player.moveTween.stop();
+      // this.player.moveTween.stop();
       this.player.canMove = false;
       obj1.body.velocity = 0;
       obj2.body.velocity = 0;
@@ -198,7 +230,7 @@ Game.prototype = {
     this.setGrassStone();
     this.tutorialGroup.visible = false;
     this.drawTimer();
-    this.drawLevelInfo();
+    this.setupLevelInfo();
 
     // this.curLevel = 2;
     // this.nextLevel();
@@ -211,7 +243,7 @@ Game.prototype = {
     this.game.time.events.remove(this.obstacleTimer);
     this.game.time.events.remove(this.grassTimer);
     this.game.time.events.remove(this.stoneTimer);
-    if(this.curLevel === 2) {
+    if(this.curLevel === this.levelTextSource.length - 1) {
       this.runway.tween.stop();
       this.winGame();
     } else {
@@ -355,49 +387,71 @@ Game.prototype = {
     this.overlayLayer.add(this.overlay);
   },
 
-  drawLevelInfo: function() {
-    var w = (600 - this.levelSetting.margin * 2 - this.levelSetting.gap * 2) / (2 + this.levelSetting.scale);
-    var gap = (600 - this.levelSetting.margin * 2 - w * 3) / 2;
-    for (var i = 0; i < 3; i++) {
-      this.levelInfo[i] = this.game.add.graphics(this.levelSetting.margin + gap * i + w * i, this.levelSetting.top);
-      this.levelInfo[i].beginFill('0x561a0b');
-      this.levelInfo[i].drawRect(0, 0, w, this.overlayHeight - this.levelSetting.margin * 2);
+  setupLevelInfo: function() {
+    var count = this.levelTextSource.length - 1;
+    this.levelSetting.baseW = (600 - this.levelSetting.margin * 2 - this.levelSetting.gap * count - this.levelSetting.corner) / (count + this.levelSetting.scale);
+    for (var i = 0; i < this.levelTextSource.length; i++) {
+      this.levelInfo[i] = this.game.add.graphics(0, this.levelSetting.top);
     }
     this.updateLevelInfo(0);
   },
 
   updateLevelInfo: function(n) {
     var style;
-    var w = (600 - this.levelSetting.margin * 2 - this.levelSetting.gap * 2) / (2 + this.levelSetting.scale);
+    var w = this.levelSetting.baseW;
     var h = this.overlayHeight - this.levelSetting.margin * 2;
-    for (var i = 0; i < 3; i++) {
+    if(this.levelText) {
+      this.levelText.destroy();
+    }
+    for (var i = 0; i < this.levelTextSource.length; i++) {
       if(i === n) {
+        var polyAdd = new Phaser.Polygon([
+          new Phaser.Point(0, 0),
+          new Phaser.Point(this.levelSetting.corner, h / 2),
+          new Phaser.Point(0, h),
+          new Phaser.Point(w * this.levelSetting.scale, h),
+          new Phaser.Point(w * this.levelSetting.scale + this.levelSetting.corner, h / 2),
+          new Phaser.Point(w * this.levelSetting.scale, 0)
+        ]);
         this.levelInfo[i].x = this.levelSetting.margin + this.levelSetting.gap * i + w * i;
         this.levelInfo[i].clear();
         this.levelInfo[i].beginFill('0xcd451d');
-        this.levelInfo[i].drawRect(0, 0, w * 2, h);
+        this.levelInfo[i].drawPolygon(polyAdd.points);
         style = { font: 'bold 30px sans-serif', fill: '#fff', align: 'center' };
         this.timer.beginFill('0xcd451d');
         this.timer.drawRect();
-        this.updateTimer(this.levelInfo[i].x, this.levelInfo[i].y + h + 5, w * 2, this.setting[this.curLevel].duration);
+        this.updateTimer(this.levelInfo[i].x, this.levelInfo[i].y + h + 5, w * this.levelSetting.scale, this.setting[this.curLevel].duration);
+        this.levelText = this.game.add.text(this.levelInfo[i].x + this.levelInfo[i].width / 2, this.levelInfo[i].y + this.levelInfo[i].height / 2 + 3, this.levelTextSource[i], style);
+        this.levelText.anchor.set(0.5);
       } else if(i < n) {
+        var polyAdd = new Phaser.Polygon([
+          new Phaser.Point(0, 0),
+          new Phaser.Point(this.levelSetting.corner, h / 2),
+          new Phaser.Point(0, h),
+          new Phaser.Point(w, h),
+          new Phaser.Point(w + this.levelSetting.corner, h / 2),
+          new Phaser.Point(w, 0)
+        ]);
         this.levelInfo[i].x = this.levelSetting.margin + this.levelSetting.gap * i + w * i;
         this.levelInfo[i].clear();
-        this.levelInfo[i].beginFill('0x561a0b');
-        this.levelInfo[i].drawRect(0, 0, w, h);
-        style = { font: '22px sans-serif', fill: '#fff', align: 'center' };
+        this.levelInfo[i].beginFill('0xcd451d');
+        this.levelInfo[i].drawPolygon(polyAdd.points);
+        // style = { font: '22px sans-serif', fill: '#fff', align: 'center' };
       } else {
-        this.levelInfo[i].x = this.levelSetting.margin + this.levelSetting.gap * i + w * (i + 1);
+        var polyAdd = new Phaser.Polygon([
+          new Phaser.Point(0, 0),
+          new Phaser.Point(this.levelSetting.corner, h / 2),
+          new Phaser.Point(0, h),
+          new Phaser.Point(w, h),
+          new Phaser.Point(w + this.levelSetting.corner, h / 2),
+          new Phaser.Point(w, 0)
+        ]);
+        this.levelInfo[i].x = this.levelSetting.margin + this.levelSetting.gap * i + w * (i + this.levelSetting.scale - 1);
         this.levelInfo[i].clear();
         this.levelInfo[i].beginFill('0x561a0b');
-        style = { font: '22px sans-serif', fill: '#fff', align: 'center' };
-        this.levelInfo[i].drawRect(0, 0, w, h);
+        // style = { font: '22px sans-serif', fill: '#fff', align: 'center' };
+        this.levelInfo[i].drawPolygon(polyAdd.points);
       }
-      if(this.levelText[i]) {
-        this.levelText[i].destroy();
-      }
-      this.levelText[i] = this.game.add.text(this.levelInfo[i].x + this.levelInfo[i].width / 2, this.levelInfo[i].y + this.levelInfo[i].height / 2 + 3, this.levelTextSource[i], style);
-      this.levelText[i].anchor.set(0.5);
     }
   },
 
