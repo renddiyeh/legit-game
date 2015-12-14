@@ -32,7 +32,7 @@ var Game = function () {
     },
     obstacle: {
       rate: 6,
-      speed:  900,
+      speed:  1000,
       gap: 1200
     }
   },{
@@ -42,8 +42,8 @@ var Game = function () {
     },
     obstacle: {
       rate: 6,
-      speed:  900,
-      gap: 1200
+      speed:  1000,
+      gap: 1000
     }
   }, {
     duration: 5,
@@ -451,7 +451,7 @@ Game.prototype = {
         ]);
         this.levelInfo[i].x = this.levelSetting.margin + this.levelSetting.gap * i + w * (i + this.levelSetting.scale - 1);
         this.levelInfo[i].clear();
-        this.levelInfo[i].beginFill('0x561a0b');
+        this.levelInfo[i].beginFill('0x333333');
         // style = { font: '22px sans-serif', fill: '#fff', align: 'center' };
         this.levelInfo[i].drawPolygon(polyAdd.points);
       }
