@@ -53,7 +53,7 @@ Preloader.prototype = {
     this.load.image('down', 'assets/gameover/down.png');
     this.load.spritesheet('again', 'assets/gameover/again.png', 178, 49);
     this.load.spritesheet('share', 'assets/gameover/share.png', 395, 56);
-    this.load.spritesheet('more', 'assets/overview/more.png', 395, 57);
+    this.load.spritesheet('more', 'assets/overview/more.png', 395, 63);
 
     // load music
     this.game.load.audio('bgm', 'assets/audio/bgm.mp3');

@@ -153,7 +153,10 @@ Game.prototype = {
     }
 
     this.game.physics.arcade.collide(this.guy, this.obstacleGroup, function(obj1, obj2) {
-      // this.player.moveTween.stop();
+      if(typeof this.player.moveTween !== 'undefined') {
+        this.player.moveTween.stop();
+      }
+      
       this.player.canMove = false;
       obj1.body.velocity = 0;
       obj2.body.velocity = 0;
