@@ -13,6 +13,11 @@ module.exports = Gameover;
 Gameover.prototype = {
   init: function(id) {
     this.deathId = id;
+    var that = this
+    document.getElementById('share').addEventListener('click', function() {
+      that.share();
+    });
+    document.getElementById('more').addEventListener('click', this.more);
   },
 
   create: function () {

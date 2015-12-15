@@ -43,10 +43,10 @@ if($params['d']) {
       <div class="btn btn-again margin-medium" data-sr="enter bottom, over 0.5s">
         <img src="assets/gameover/again.png">
       </div>
-      <div class="btn btn-share margin-medium" data-sr="enter bottom, over 0.5s">
+      <div id="share" class="btn btn-share margin-medium" data-sr="enter bottom, over 0.5s">
         <img src="assets/gameover/share.png">
       </div>
-      <div class="btn btn-more margin-medium" data-sr="enter bottom, over 0.5s">
+      <div id="more" class="btn btn-more margin-medium" data-sr="enter bottom, over 0.5s">
         <img src="assets/overview/more.png">
       </div>
     </div>
