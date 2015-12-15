@@ -22,8 +22,8 @@ var Game = function () {
     },
     obstacle: {
       rate: 5,
-      speed: 750,
-      gap: 1500
+      speed: 800,
+      gap: 1200
     }
   }, {
     duration: 12,
@@ -42,7 +42,7 @@ var Game = function () {
     },
     obstacle: {
       rate: 6,
-      speed:  1000,
+      speed:  1100,
       gap: 1000
     }
   }, {
@@ -52,7 +52,7 @@ var Game = function () {
     },
     obstacle: {
       rate: 5,
-      speed: 750,
+      speed: 800,
       gap: 1500
     }
   }, {
@@ -62,8 +62,8 @@ var Game = function () {
     },
     obstacle: {
       rate: 5,
-      speed:  750,
-      gap: 1500
+      speed:  600,
+      gap: 1900
     }
   }];
   this.curSetting = null;
@@ -423,7 +423,7 @@ Game.prototype = {
         style = { font: 'bold 30px sans-serif', fill: '#fff', align: 'center' };
         this.timer.beginFill('0xcd451d');
         this.timer.drawRect();
-        this.updateTimer(this.levelInfo[i].x, this.levelInfo[i].y + h + 5, w * this.levelSetting.scale, this.setting[this.curLevel].duration);
+        this.updateTimer(this.levelInfo[i].x, this.levelInfo[i].y + h + 3, w * this.levelSetting.scale, this.setting[this.curLevel].duration);
         this.levelText = this.game.add.text(this.levelInfo[i].x + this.levelInfo[i].width / 2, this.levelInfo[i].y + this.levelInfo[i].height / 2 + 3, this.levelTextSource[i], style);
         this.levelText.anchor.set(0.5);
       } else if(i < n) {
@@ -474,7 +474,7 @@ Game.prototype = {
   timerCountdown: function() {
     this.timer.clear();
     this.timer.beginFill('0xcd451d');
-    this.timer.drawRect(this.timerSetting.x, this.timerSetting.y, this.timerSetting.sub * this.timerSetting.count, 10);
+    this.timer.drawRect(this.timerSetting.x, this.timerSetting.y, this.timerSetting.sub * this.timerSetting.count, 5);
     this.timerSetting.count++;
   },
 
