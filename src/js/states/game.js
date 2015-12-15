@@ -162,6 +162,8 @@ Game.prototype = {
       obj2.body.velocity = 0;
       obj2.body.immovable = true;
       if(!this.gameover) {
+        window.playerState.killedby = obj2.id;
+
         this.gameover = true;
         this.runway.tween.stop();
         this.audio.bgm.stop();
@@ -217,6 +219,7 @@ Game.prototype = {
       y: -200
     }, 1000, Phaser.Easing.Quadratic.In, true);
     playerGoToFinish.onComplete.add(function(){
+      window.playerState = 0;
       this.game.state.start('Gameover', true, false, 0);
     }, this);
     this.audio.bgm.stop();

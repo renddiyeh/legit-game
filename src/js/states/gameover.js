@@ -103,10 +103,11 @@ Gameover.prototype = {
   },
 
   share: function () {
-    console.log('share');
+    var url = 'http://legislator.thenewslens.com/game/?d=' + this.deathId;
+    console.log(url);
   },
 
   more: function () {
-    console.log('more');
+    window.open('http://legislator.thenewslens.com/lesson-3.html');
   }
 };

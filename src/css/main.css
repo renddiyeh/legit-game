@@ -30,6 +30,18 @@ body.bg-pale {
 }
 
 #law {
+  display: none;
+}
+
+@media screen and (min-width: 768px) {
+  #law {
+    width: 600px;
+    margin: 0 auto;
+    display: block;
+  }
+}
+
+#law {
   width: 600px;
   margin: 0 auto;
 }
@@ -105,7 +117,7 @@ body.bg-pale {
 
 .btn-more {
   width: 395.5px;
-  height: 57px;
+  height: 63px;
 }
 
 .btn-more img {

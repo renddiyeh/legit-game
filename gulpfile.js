@@ -87,13 +87,13 @@ gulp.task('minifycss', ['clean'], function () {
 });
 
 gulp.task('processhtml', ['clean'], function() {
-  return gulp.src('src/index.html')
+  return gulp.src('src/index.php')
     .pipe(processhtml({}))
     .pipe(gulp.dest(paths.dist));
 });
 
 gulp.task('minifyhtml', ['processhtml'], function() {
-  gulp.src('dist/index.html')
+  gulp.src('dist/index.php')
     .pipe(gulpif(!watching, minifyhtml()))
     .pipe(gulp.dest(paths.dist))
     .on('error', gutil.log);
