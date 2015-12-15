@@ -20,6 +20,7 @@ body.bg-pale {
 .game {
   margin: 0 auto;
   display: none;
+  height: 100vh;
 }
 
 #info {
